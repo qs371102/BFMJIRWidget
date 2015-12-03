@@ -4,6 +4,8 @@ public class IRCommand {
 	private final int frequency;
 	private final int[] onOffs;
 	
+	public final byte[] _onOffs=new byte[5];
+	
 	public IRCommand(int frequency, int[] onOffs) {
 		this.frequency = frequency;
 		this.onOffs = onOffs;

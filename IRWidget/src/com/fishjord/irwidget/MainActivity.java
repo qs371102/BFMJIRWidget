@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.bfmj.network.DummyNetworkService;
+import com.bfmj.network.INetworkService;
 import com.fishjord.irwidget.ir.IRDAService;
 import com.fishjord.irwidget.ir.IRService;
 import com.fishjord.irwidget.ir.codes.CodeManager;
@@ -31,7 +33,9 @@ import com.fishjord.irwidget.ir.codes.Manufacturer;
 
 public class MainActivity extends Activity {
 	private CodeManager codeManager;
-	private IRService service;
+	//private IRService service;
+	
+	private INetworkService service;
 	private Manufacturer manufacturer;
 	/* for dynamic menu creation... */
 	private static final int MENU_SETTINGS = 0;
@@ -52,7 +56,8 @@ public class MainActivity extends Activity {
 		try {
 			codeManager = CodeManager.getInstance(this.getApplicationContext());
 			// service = new DummyIRService();
-			service = new IRDAService(this);
+			//service = new IRDAService(this);
+			service=new DummyNetworkService();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -151,7 +156,7 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		// menu.add(0, MENU_ABOUT, 0, "About").setIcon(R.drawable.ic_launcher);
+	    //menu.add(0, MENU_ABOUT, 0, "About").setIcon(R.drawable.ic_launcher);
 		return true;
 	}
 
@@ -159,7 +164,9 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Intents must be placed in the AndroidManifest.xml file ...
 		int id = item.getItemId();
-		if (id == R.id.action_settings)
+		if(id == R.id.action_learn)
+			startActivity(new Intent(this, Learn.class));
+		else if (id == R.id.action_settings)
 			startActivity(new Intent(this, Settings.class));
 		else if (id == R.id.action_about)
 			startActivity(new Intent(this, About.class));
@@ -169,19 +176,5 @@ public class MainActivity extends Activity {
 			return false;
 
 		return true;
-	}
-	//@Override
-	public void onReceive(Context context, Intent intent) {
-	    //...
-	    String action = intent.getAction();
-	    if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
-	        int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
-	        if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-	            // Wifi P2P is enabled
-	        } else {
-	            // Wi-Fi P2P is not enabled
-	        }
-	    }
-	    //...
 	}
 }
