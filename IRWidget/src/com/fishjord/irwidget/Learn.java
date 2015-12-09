@@ -28,7 +28,7 @@ public class Learn extends Activity {
 			public void onClick(View view) {
 				int cmd=0x88;
 				int[] datas=cmdAddress;
-				ControlCommand command=new ControlCommand(cmd, datas,true);
+				ControlCommand command=new ControlCommand(cmd, datas,true,true,true);
 				service.sendControlCommand(command);
 			}
 		}); 
@@ -40,7 +40,7 @@ public class Learn extends Activity {
 			public void onClick(View view) {
 				int cmd=0x86;
 				int[] datas=cmdAddress;
-				ControlCommand command=new ControlCommand(cmd, datas,true);
+				ControlCommand command=new ControlCommand(cmd, datas,true,true,false);
 				service.sendControlCommand(command);
 			}
 		}); 
@@ -50,9 +50,9 @@ public class Learn extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				int cmd=0x89;
+				int cmd=0x8A;
 				int[] datas=cmdAddress;
-				ControlCommand command=new ControlCommand(cmd, datas,true);
+				ControlCommand command=new ControlCommand(cmd, datas,true,false,true);
 				service.sendControlCommand(command);
 			}
 		});
@@ -63,9 +63,9 @@ public class Learn extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				int cmd=0x8A;
+				int cmd=0x89;
 				int[] datas=new int[]{0x00};
-				ControlCommand command=new ControlCommand(cmd, datas,false);
+				ControlCommand command=new ControlCommand(cmd, datas,false,false,false);
 				service.sendControlCommand(command);
 			}
 		});

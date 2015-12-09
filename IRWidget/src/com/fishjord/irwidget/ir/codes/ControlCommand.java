@@ -16,12 +16,15 @@ public class ControlCommand {
 	private int[] onOffs;
 
 	private boolean useXor=true;
+	private boolean useRF=true;
 	private int xor;
-
-	public ControlCommand(int cmd2,int[] datas,boolean useXor)
+	private boolean needCallBack=false;
+	
+	public ControlCommand(int cmd,int[] datas,boolean useXor,boolean useRF,boolean needCallback)
 	{
 		this.useXor=useXor;
-		this.cmd=cmd2;
+		this.useRF=useRF;
+		this.cmd=cmd;
 		if(this.useXor)
 		{
 			this.address=datas;
@@ -74,6 +77,7 @@ public class ControlCommand {
 				ret.append(address[index]);
 				ret.append(",");
 			}
+			if(useRF)
 			for(int index = 0;index < reservedField.length;index++) {
 				ret.append(reservedField[index]);
 				ret.append(",");
