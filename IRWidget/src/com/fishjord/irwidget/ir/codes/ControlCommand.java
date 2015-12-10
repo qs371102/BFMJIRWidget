@@ -7,10 +7,9 @@ public class ControlCommand {
 	private String TAG="BFMJ";
 	
 	private int cmd;
-
-	//UseXor=false 时 为下载模式 
+	
 	private int[] reservedField=new int[]{0,0};
-	// 地址长度为一个字节
+	
 	private int[] address;
 	//----------------------------
 	private int[] onOffs;
@@ -18,13 +17,15 @@ public class ControlCommand {
 	private boolean useXor=true;
 	private boolean useRF=true;
 	private int xor;
-	private boolean needCallBack=false;
+	
+	public boolean needCallBack=false;
 	
 	public ControlCommand(int cmd,int[] datas,boolean useXor,boolean useRF,boolean needCallback)
 	{
 		this.useXor=useXor;
 		this.useRF=useRF;
 		this.cmd=cmd;
+		this.needCallBack=needCallback;
 		if(this.useXor)
 		{
 			this.address=datas;
@@ -49,7 +50,7 @@ public class ControlCommand {
 	{
 		return this.cmd;
 	}
-	//异或
+	//寮傛垨
 	private void formXor()
 	{
 		if(this.useXor)
