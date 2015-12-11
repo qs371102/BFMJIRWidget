@@ -128,7 +128,7 @@ public class NetworkService implements INetworkService {
                 break;
             case MESSAGE_POST_TOAST:
                 /* Post a toast to the UI */
-                Toast.makeText(mContainer.getApplicationContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContainer.getApplicationContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
                 delegate.receiveData((String)msg.obj);
                 break;
             default:
@@ -157,7 +157,7 @@ public class NetworkService implements INetworkService {
         @BusSignalHandler(iface = "org.alljoyn.bus.samples.slchat", signal = "Chat")
         public void Chat(String senderName, String message) {
             Log.i(TAG, "Signal  : " + senderName +": "+ message);
-            sendUiMessage(MESSAGE_CHAT, senderName + ": "+ message);
+            sendUiMessage(MESSAGE_CHAT, senderName + ":"+ message);
         }
 
         /* Helper function to send a message to the UI thread. */
@@ -311,6 +311,7 @@ public class NetworkService implements INetworkService {
   	{
   		if(sign.trim().equals(this.selfID))
   		{
+  			
   			return true;
   		}
   		else
