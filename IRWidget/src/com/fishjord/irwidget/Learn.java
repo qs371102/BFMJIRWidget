@@ -36,7 +36,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class Learn extends Activity implements INetworkCallback {
 
 	private NetworkService service;
-	private int[] cmdAddress=new int[]{0x00};
+	private int[] cmdAddress=new int[]{0x3e};
 
 	String TAG = "IRWidget";
 	private static final boolean SHOW_DEBUG = true; 
@@ -85,12 +85,13 @@ public class Learn extends Activity implements INetworkCallback {
 		});
 		
 		icons=new String[]{"Vol+","Vol-","^","v","Power","Menu","Mute","Ok"};
+		
 		groups=new String[]{"TV","Air Conditioning","Refrigerator"};
 		selectedIcon=icons[0];
 		//分组 Spinner
 		
 		Spinner spGroup=(Spinner)findViewById(R.id.spGroup);
-		ArrayAdapter<String> spGroupArrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+		ArrayAdapter<String> spGroupArrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,groups);
 		spGroupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spGroup.setAdapter(spGroupArrayAdapter);
 		spGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -143,8 +144,10 @@ public class Learn extends Activity implements INetworkCallback {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Mine= codeManager.getManufacturer("Mine");
-				LearnedButton lb = new LearnedButton("电视开关","Power","TV",new LearnedCommand(cmdAddress, "88 00 00 00 88"));
+				//Mine= codeManager.getManufacturer("Mine");
+				LearnedCommand lc=new LearnedCommand(cmdAddress[0], "88 00 00 00 88");
+				Log.d(TAG, "---address----"+cmdAddress[0]);
+				LearnedButton lb = new LearnedButton("电视开关","Power","TV",lc);
 				Log.d(TAG, "----insert:-------"+hddb.insert(lb));
 				Log.d(TAG, "----count:-------"+hddb.getContactsCount());
 			}
@@ -179,9 +182,9 @@ public class Learn extends Activity implements INetworkCallback {
 			Toast.makeText(this, datas, Toast.LENGTH_LONG).show();
 			Log.d(TAG, "Succeed!");
 			EditText etNote=(EditText)findViewById(R.id.etNote);
-			LearnedCommand lc =new LearnedCommand(cmdAddress,datas);
-			LearnedButton lb = new LearnedButton(etNote.getText().toString(),selectedIcon,selectedGroup,lc);
-			hddb.insert(lb);
+			//LearnedCommand lc =new LearnedCommand(cmdAddress[0],datas);
+			//LearnedButton lb = new LearnedButton(etNote.getText().toString(),selectedIcon,selectedGroup,lc);
+			//hddb.insert(lb);
 			//new IRButton(etNote.toString(), selectedIcon, "", new IRCommand(9600, datas));
 			//Mine.getButtons();
 		}
