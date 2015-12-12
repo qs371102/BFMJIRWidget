@@ -19,7 +19,7 @@ public class ControlCommand {
 	private int xor;
 	
 	public boolean needCallBack=false;
-	
+	//TODO needCallback
 	public ControlCommand(int cmd,int[] datas,boolean useXor,boolean useRF,boolean needCallback)
 	{
 		this.useXor=useXor;

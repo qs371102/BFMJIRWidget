@@ -5,7 +5,8 @@
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
         <Button
             android:id="@+id/btLearn"
@@ -13,13 +14,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="开始学习" />
-
     </TableRow>
 
     <TableRow
         android:id="@+id/tableRow2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
         <TextView
             android:id="@+id/tvNote"
@@ -39,11 +40,12 @@
             <requestFocus />
         </EditText>
     </TableRow>
-    
+
     <TableRow
         android:id="@+id/tableRow3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
         <TextView
             android:id="@+id/tvIcon"
@@ -63,7 +65,29 @@
     <TableRow
         android:id="@+id/tableRow4"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/tvGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="分组："
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Spinner
+            android:id="@+id/spGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow5"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
         <Button
             android:id="@+id/btSave"
@@ -72,7 +96,6 @@
             android:layout_weight="1"
             android:clickable="false"
             android:text="保存" />
-
     </TableRow>
 
 </TableLayout>
