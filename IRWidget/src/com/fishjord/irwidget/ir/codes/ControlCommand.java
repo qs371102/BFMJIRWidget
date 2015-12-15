@@ -94,7 +94,10 @@ public class ControlCommand {
 				}
 			}
 		}
-		
+		if(needCallBack)
+			ret.append(":true");
+		else
+			ret.append(":false");
 		Log.d(TAG, ret.toString());
 		return ret.toString();
 	}

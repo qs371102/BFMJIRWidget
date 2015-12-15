@@ -164,7 +164,9 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Intents must be placed in the AndroidManifest.xml file ...
 		int id = item.getItemId();
-		if(id == R.id.action_learn)
+		if(id == R.id.action_showlearned)
+			startActivity(new Intent(this, ShowLearned.class));
+		else if(id == R.id.action_learn)
 			startActivity(new Intent(this, Learn.class));
 		else if (id == R.id.action_settings)
 			startActivity(new Intent(this, Settings.class));

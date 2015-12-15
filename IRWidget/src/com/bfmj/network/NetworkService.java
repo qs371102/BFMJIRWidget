@@ -35,8 +35,8 @@ public class NetworkService implements INetworkService {
     private Handler mBusHandler;
     private Activity mContainer;
     
-    private String selfID; 
-    private String targetID;
+    private static String selfID; 
+    private static String targetID;
     
     
     public void SetTargetID(String id)
@@ -307,11 +307,10 @@ public class NetworkService implements INetworkService {
     }
     
   //判断是否是本设备的命令
-  	public boolean isMine(String sign)
+  	public static boolean isMine(String sign)
   	{
-  		if(sign.trim().equals(this.selfID))
+  		if(sign.trim().equals(selfID))
   		{
-  			
   			return true;
   		}
   		else
