@@ -35,10 +35,10 @@ public class ShowLearned extends Activity implements INetworkCallback {
 	
 	private NetworkService service;
 	
-	private Map<String,List<LearnedButton>> groupsAndButtons=new LinkedHashMap<String, List<LearnedButton>>();;
 	private List<LearnedButton> lbs=new ArrayList<LearnedButton>();  
 	private List<String> groups=new ArrayList<String>();
 	private String selectedGroup;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

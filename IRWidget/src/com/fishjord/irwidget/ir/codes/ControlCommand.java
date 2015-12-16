@@ -95,7 +95,7 @@ public class ControlCommand {
 				}
 			}
 		}
-		ret.append(String.valueOf(needCallBack));
+		ret.append(":"+String.valueOf(needCallBack));
 		Log.d(TAG, ret.toString());
 		return ret.toString();
 	}

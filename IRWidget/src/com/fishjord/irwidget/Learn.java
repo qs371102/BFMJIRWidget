@@ -43,10 +43,10 @@ public class Learn extends Activity implements INetworkCallback {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		hddb=HandleSqlDB.getInstant(this);
-		Log.d(TAG, "========count:======="+hddb.getContactsCount());
+		//Log.d(TAG, "========count:======="+hddb.getContactsCount());
 		hddb.close();
 		cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
-		Log.d(TAG, "=======Address:======"+cmdAddress[0]);
+		//Log.d(TAG, "=======Address:======"+cmdAddress[0]);
 		hddb.close();
 
 		setContentView(R.layout.learn_advance);
@@ -64,6 +64,14 @@ public class Learn extends Activity implements INetworkCallback {
 				ControlCommand command=new ControlCommand(cmd, datas,true,true,true);
 				service.sendControlCommand(command);
 				
+				new android.os.Handler().postDelayed(
+						new Runnable() {
+							public void run() {
+								Log.d(TAG,"Delay");
+								btLearn.setEnabled(true);
+							}
+						}, 
+						20000);
 			}
 		});
 
@@ -163,7 +171,7 @@ public class Learn extends Activity implements INetworkCallback {
 
 		if(datas.equals("e0"))
 		{
-			Log.d(TAG, "Failed!");
+			Toast.makeText(Learn.this, "超时！未能成功学习", Toast.LENGTH_LONG).show();
 			btLearn.setEnabled(true);
 			btSave.setEnabled(false);
 		}
@@ -172,7 +180,6 @@ public class Learn extends Activity implements INetworkCallback {
 			Toast.makeText(this, datas, Toast.LENGTH_LONG).show();
 			cmdData=datas;
 			btSave.setEnabled(true);
-			Log.d(TAG, "Succeed!");
 		}
 	}
 }
