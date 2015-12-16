@@ -18,7 +18,8 @@ public class ControlCommand {
 	private boolean useRF=true;
 	private int xor;
 	
-	public boolean needCallBack=false;
+	private boolean needCallBack=false;
+	private static String stringToAppend=" ";
 	//TODO needCallback
 	public ControlCommand(int cmd,int[] datas,boolean useXor,boolean useRF,boolean needCallback)
 	{
@@ -71,17 +72,17 @@ public class ControlCommand {
 	public String toString()
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append(cmd).append(",");
+		ret.append(cmd).append(stringToAppend);
 		if(useXor)
 		{
 			for(int index = 0;index < address.length;index++) {
 				ret.append(address[index]);
-				ret.append(",");
+				ret.append(stringToAppend);
 			}
 			if(useRF)
 			for(int index = 0;index < reservedField.length;index++) {
 				ret.append(reservedField[index]);
-				ret.append(",");
+				ret.append(stringToAppend);
 			}
 			ret.append(xor);
 		}
@@ -90,14 +91,11 @@ public class ControlCommand {
 			for(int index = 0;index < onOffs.length;index++) {
 				ret.append(onOffs[index]);
 				if(index + 1 != onOffs.length) {
-					ret.append(",");
+					ret.append(stringToAppend);
 				}
 			}
 		}
-		if(needCallBack)
-			ret.append(":true");
-		else
-			ret.append(":false");
+		ret.append(String.valueOf(needCallBack));
 		Log.d(TAG, ret.toString());
 		return ret.toString();
 	}

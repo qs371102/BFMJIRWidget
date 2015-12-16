@@ -16,7 +16,7 @@ public class ProntoParser {
 			codes[index] = Integer.parseInt(lexemes[index], 16);
 		}
 	
-		assert(codes[0] == 0);
+		//assert(codes[0] == 0);
 		
 		return new IRCommand((int)(1000000 / (codes[1] * 0.241246)), Arrays.copyOfRange(codes, 4, codes.length));		
 	}

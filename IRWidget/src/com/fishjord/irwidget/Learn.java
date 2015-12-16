@@ -57,9 +57,10 @@ public class Learn extends Activity implements INetworkCallback {
 
 	private HandleSqlDB hddb;
 
-	Manufacturer Mine;
 	private Context context;
-
+	private Button btLearn;
+	private Button btSave;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,7 +76,7 @@ public class Learn extends Activity implements INetworkCallback {
 		setContentView(R.layout.learn_advance);
 		service=new NetworkService(this);
 		service.delegate=this;
-		Button btLearn=(Button)findViewById(R.id.btLearn);
+		btLearn=(Button)findViewById(R.id.btLearn);
 		btLearn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -142,17 +143,20 @@ public class Learn extends Activity implements INetworkCallback {
 
 		});
 
-		Button btSave=(Button)findViewById(R.id.btSave);
+		btSave=(Button)findViewById(R.id.btSave);
 		btSave.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				EditText et=(EditText)findViewById(R.id.etNote);
+				if(et.getText().equals(""))
+					return;
 				cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
 				if(cmdData=="")
 					return;
 				LearnedCommand lc=new LearnedCommand(cmdAddress[0], sendCmd+cmdData);
-				EditText et=(EditText)findViewById(R.id.etNote);
+				btSave.setClickable(true);
 				LearnedButton lb = new LearnedButton( et.getText().toString(),selectedIcon,selectedGroup,lc);
 				Log.d(TAG, "----insert:---======----"+hddb.insert(lb));
 				hddb.close();
@@ -180,9 +184,8 @@ public class Learn extends Activity implements INetworkCallback {
 		{
 			Log.d(TAG, "Failed!");
 			learnStatus=false;
-			Button btSave=(Button)findViewById(R.id.btSave);
-			btSave.setClickable(true);
-			//btSave.setEnabled(true);
+			btLearn.setEnabled(true);
+			btSave.setEnabled(false);
 		}
 		else
 		{
@@ -190,7 +193,6 @@ public class Learn extends Activity implements INetworkCallback {
 			cmdData=datas;
 			learnStatus=true;
 			Log.d(TAG, "Succeed!");
-			//EditText etNote=(EditText)findViewById(R.id.etNote);
 		}
 	}
 

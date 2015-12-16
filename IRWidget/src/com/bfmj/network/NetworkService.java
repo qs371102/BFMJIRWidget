@@ -12,6 +12,7 @@ import android.app.Activity;
 
 import com.fishjord.irwidget.ir.codes.ControlCommand;
 import com.fishjord.irwidget.ir.codes.IRCommand;
+import com.fishjord.irwidget.ir.codes.LearnedCommand;
 import com.bfmj.handledevices.HandleDevices;
 
 //import android.app.Activity;
@@ -316,5 +317,13 @@ public class NetworkService implements INetworkService {
   		else
   			return false;
   	}
+
+	@Override
+	public void sendLearnedCommand(LearnedCommand command) {
+		// TODO Auto-generated method stub
+		Message msg = mBusHandler.obtainMessage(BusHandlerCallback.CHAT,
+                new PingInfo(selfID,targetID+":"+command.toString()));
+		mBusHandler.sendMessage(msg);
+	}
 
 }
