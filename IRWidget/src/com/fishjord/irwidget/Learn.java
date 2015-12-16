@@ -1,28 +1,13 @@
 package com.fishjord.irwidget;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import com.bfmj.byteandstringtools.ByteAndStringTools;
 import com.bfmj.handledb.HandleSqlDB;
 import com.bfmj.network.INetworkCallback;
 import com.bfmj.network.NetworkService;
-import com.fishjord.irwidget.ir.codes.CodeManager;
-import com.fishjord.irwidget.ir.codes.CommandButton;
 import com.fishjord.irwidget.ir.codes.ControlCommand;
-import com.fishjord.irwidget.ir.codes.IRButton;
-import com.fishjord.irwidget.ir.codes.IRCommand;
 import com.fishjord.irwidget.ir.codes.LearnedButton;
 import com.fishjord.irwidget.ir.codes.LearnedCommand;
-import com.fishjord.irwidget.ir.codes.Manufacturer;
-
 import android.app.Activity;
-import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,12 +25,8 @@ public class Learn extends Activity implements INetworkCallback {
 
 	private NetworkService service;
 	private int[] cmdAddress=new int[]{0x00};
-	private String sendCmd="89 ";
-	private boolean learnStatus=false;
 	private String cmdData="";
-
 	String TAG = "IRWidget";
-	private static final boolean SHOW_DEBUG = true; 
 	private String selectedIcon;
 	private String selectedGroup;
 
@@ -53,19 +34,14 @@ public class Learn extends Activity implements INetworkCallback {
 
 	private String[] groups;
 
-	private CodeManager codeManager;
-
 	private HandleSqlDB hddb;
 
-	private Context context;
 	private Button btLearn;
 	private Button btSave;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//初始化数据库
-		context=this;
 		hddb=HandleSqlDB.getInstant(this);
 		Log.d(TAG, "========count:======="+hddb.getContactsCount());
 		hddb.close();
@@ -81,10 +57,13 @@ public class Learn extends Activity implements INetworkCallback {
 
 			@Override
 			public void onClick(View v) {
+				btLearn.setEnabled(false);
+				btSave.setEnabled(false);
 				int cmd=0x88;
 				int[] datas=cmdAddress;
 				ControlCommand command=new ControlCommand(cmd, datas,true,true,true);
 				service.sendControlCommand(command);
+				
 			}
 		});
 
@@ -151,14 +130,16 @@ public class Learn extends Activity implements INetworkCallback {
 				// TODO Auto-generated method stub
 				EditText et=(EditText)findViewById(R.id.etNote);
 				if(et.getText().equals(""))
+				{
+					Toast.makeText(Learn.this, "备注不能为空", Toast.LENGTH_LONG).show();
 					return;
+				}
 				cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
-				if(cmdData=="")
-					return;
-				LearnedCommand lc=new LearnedCommand(cmdAddress[0], sendCmd+cmdData);
-				btSave.setClickable(true);
+				LearnedCommand lc=new LearnedCommand(cmdAddress[0],cmdData);
+				btLearn.setEnabled(true);
+				btSave.setEnabled(false);
 				LearnedButton lb = new LearnedButton( et.getText().toString(),selectedIcon,selectedGroup,lc);
-				Log.d(TAG, "----insert:---======----"+hddb.insert(lb));
+				hddb.insert(lb);
 				hddb.close();
 			}
 		});
@@ -183,7 +164,6 @@ public class Learn extends Activity implements INetworkCallback {
 		if(datas.equals("e0"))
 		{
 			Log.d(TAG, "Failed!");
-			learnStatus=false;
 			btLearn.setEnabled(true);
 			btSave.setEnabled(false);
 		}
@@ -191,23 +171,8 @@ public class Learn extends Activity implements INetworkCallback {
 		{
 			Toast.makeText(this, datas, Toast.LENGTH_LONG).show();
 			cmdData=datas;
-			learnStatus=true;
+			btSave.setEnabled(true);
 			Log.d(TAG, "Succeed!");
 		}
-	}
-
-	public void OnPause()
-	{
-
-	}
-
-	public void OnStop()
-	{
-
-	}
-
-	public void OnDestroy()
-	{
-
 	}
 }
