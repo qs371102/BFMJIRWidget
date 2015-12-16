@@ -24,6 +24,7 @@ import android.widget.Spinner;
 
 import com.bfmj.network.DummyNetworkService;
 import com.bfmj.network.INetworkService;
+import com.bfmj.network.NetworkService;
 import com.fishjord.irwidget.ir.IRDAService;
 import com.fishjord.irwidget.ir.IRService;
 import com.fishjord.irwidget.ir.codes.CodeManager;
@@ -55,9 +56,7 @@ public class MainActivity extends Activity {
 		super.onStart();
 		try {
 			codeManager = CodeManager.getInstance(this.getApplicationContext());
-			// service = new DummyIRService();
-			//service = new IRDAService(this);
-			service=new DummyNetworkService();
+			service=new NetworkService(this);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

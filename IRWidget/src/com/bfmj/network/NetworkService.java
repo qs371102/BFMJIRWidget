@@ -130,7 +130,8 @@ public class NetworkService implements INetworkService {
             case MESSAGE_POST_TOAST:
                 /* Post a toast to the UI */
                 //Toast.makeText(mContainer.getApplicationContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
-                delegate.receiveData((String)msg.obj);
+                if(delegate!=null)
+                	delegate.receiveData((String)msg.obj);
                 break;
             default:
                 break;
