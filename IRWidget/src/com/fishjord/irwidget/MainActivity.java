@@ -4,10 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.p2p.WifiP2pManager;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -22,11 +19,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
-import com.bfmj.network.DummyNetworkService;
 import com.bfmj.network.INetworkService;
 import com.bfmj.network.NetworkService;
-import com.fishjord.irwidget.ir.IRDAService;
-import com.fishjord.irwidget.ir.IRService;
 import com.fishjord.irwidget.ir.codes.CodeManager;
 import com.fishjord.irwidget.ir.codes.IRButton;
 import com.fishjord.irwidget.ir.codes.IRCommand;
@@ -175,7 +169,6 @@ public class MainActivity extends Activity {
 			startActivity(new Intent(this, License.class));
 		else
 			return false;
-
 		return true;
 	}
 }

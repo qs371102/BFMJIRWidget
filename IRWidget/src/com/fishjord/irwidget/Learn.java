@@ -143,7 +143,7 @@ public class Learn extends Activity implements INetworkCallback {
 					return;
 				}
 				cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
-				LearnedCommand lc=new LearnedCommand(cmdAddress[0],cmdData);
+				LearnedCommand lc=new LearnedCommand(cmdAddress[0],cmdData.trim());
 				btLearn.setEnabled(true);
 				btSave.setEnabled(false);
 				LearnedButton lb = new LearnedButton( et.getText().toString(),selectedIcon,selectedGroup,lc);

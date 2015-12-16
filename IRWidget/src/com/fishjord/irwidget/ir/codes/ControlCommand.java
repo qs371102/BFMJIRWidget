@@ -72,24 +72,24 @@ public class ControlCommand {
 	public String toString()
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append(cmd).append(stringToAppend);
+		ret.append(String.format("%02x",cmd)).append(stringToAppend);
 		if(useXor)
 		{
 			for(int index = 0;index < address.length;index++) {
-				ret.append(address[index]);
+				ret.append(String.format("%02x", address[index]));
 				ret.append(stringToAppend);
 			}
 			if(useRF)
 			for(int index = 0;index < reservedField.length;index++) {
-				ret.append(reservedField[index]);
+				ret.append(String.format("%02x",reservedField[index]));
 				ret.append(stringToAppend);
 			}
-			ret.append(xor);
+			ret.append(String.format("%02x",xor));
 		}
 		else
 		{
 			for(int index = 0;index < onOffs.length;index++) {
-				ret.append(onOffs[index]);
+				ret.append(String.format("%02x",onOffs[index]));
 				if(index + 1 != onOffs.length) {
 					ret.append(stringToAppend);
 				}
