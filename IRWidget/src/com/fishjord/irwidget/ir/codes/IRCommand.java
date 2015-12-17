@@ -23,7 +23,7 @@ public class IRCommand {
 	@Override
 	public String toString() {
 		StringBuilder ret = new StringBuilder();
-		if(!needCallback)
+		if(needCallback)
 		{
 			ret.append(frequency).append(stringToAppend);
 
@@ -37,6 +37,7 @@ public class IRCommand {
 		else
 		{
 			//TODO need modify
+			ret.append("89"+stringToAppend);
 			for(int index = 0;index < onOffs.length;index++) {
 				ret.append(onOffs[index]);
 				if(index + 1 != onOffs.length) {

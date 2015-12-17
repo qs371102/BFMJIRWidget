@@ -6,6 +6,8 @@ import android.app.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.bfmj.handledb.HandleSqlDB;
 import com.bfmj.network.INetworkService;
 import com.bfmj.network.NetworkService;
 import com.fishjord.irwidget.ir.codes.CodeManager;
@@ -32,6 +35,8 @@ public class MainActivity extends Activity {
 	
 	private INetworkService service;
 	private Manufacturer manufacturer;
+	
+	
 	/* for dynamic menu creation... */
 	private static final int MENU_SETTINGS = 0;
 	private static final int MENU_ABOUT = 1;
@@ -40,11 +45,13 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		HandleSqlDB.getInstant(this);
 		setContentView(R.layout.activity_main);
-
 	}
-
+    
+    
+    
+    
 	@Override
 	protected void onStart() {
 		super.onStart();
