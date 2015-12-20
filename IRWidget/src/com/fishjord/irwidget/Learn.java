@@ -8,6 +8,7 @@ import com.fishjord.irwidget.ir.codes.ControlCommand;
 import com.fishjord.irwidget.ir.codes.LearnedButton;
 import com.fishjord.irwidget.ir.codes.LearnedCommand;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,16 +39,18 @@ public class Learn extends Activity implements INetworkCallback {
 
 	private Button btLearn;
 	private Button btSave;
+	private Button btFinish;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		hddb=HandleSqlDB.getInstant(this);
-		//Log.d(TAG, "========count:======="+hddb.getContactsCount());
-		hddb.close();
-		cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
-		//Log.d(TAG, "=======Address:======"+cmdAddress[0]);
-		hddb.close();
+		Intent intent = getIntent();
+        String extra_select_remoter_type = intent.getStringExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE));
+        String extra_remoter_name=intent.getStringExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME));
+        
+        selectedGroup=extra_select_remoter_type+" "+extra_remoter_name;
+        Log.d(TAG, extra_select_remoter_type+"===="+extra_remoter_name);
+		
 		
 		setContentView(R.layout.learn_advance);
 		service=new NetworkService(this);
@@ -82,24 +85,24 @@ public class Learn extends Activity implements INetworkCallback {
 		selectedIcon=icons[0];
 		//分组 Spinner
 
-		Spinner spGroup=(Spinner)findViewById(R.id.spGroup);
-		ArrayAdapter<String> spGroupArrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,groups);
-		spGroupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spGroup.setAdapter(spGroupArrayAdapter);
-		spGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-				// TODO Auto-generated method stub
-				selectedGroup=groups[pos];
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
-				selectedGroup=groups[0];
-			}
-		});
+//		Spinner spGroup=(Spinner)findViewById(R.id.spGroup);
+//		ArrayAdapter<String> spGroupArrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,groups);
+//		spGroupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//		spGroup.setAdapter(spGroupArrayAdapter);
+//		spGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
+//
+//			@Override
+//			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+//				// TODO Auto-generated method stub
+//				selectedGroup=groups[pos];
+//			}
+//
+//			@Override
+//			public void onNothingSelected(AdapterView<?> parent) {
+//				// TODO Auto-generated method stub
+//				selectedGroup=groups[0];
+//			}
+//		});
 
 
 
@@ -129,7 +132,18 @@ public class Learn extends Activity implements INetworkCallback {
 			}
 
 		});
-
+		btFinish=(Button)findViewById(R.id.btFinish);
+		btFinish.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		
 		btSave=(Button)findViewById(R.id.btSave);
 		btSave.setEnabled(false);
 		btSave.setOnClickListener(new OnClickListener() {
@@ -143,6 +157,9 @@ public class Learn extends Activity implements INetworkCallback {
 					Toast.makeText(Learn.this, "备注不能为空", Toast.LENGTH_LONG).show();
 					return;
 				}
+				if(hddb==null)
+					hddb=HandleSqlDB.getInstant(Learn.this);
+				
 				cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
 				LearnedCommand lc=new LearnedCommand(cmdAddress[0],cmdData.trim());
 				btLearn.setEnabled(true);

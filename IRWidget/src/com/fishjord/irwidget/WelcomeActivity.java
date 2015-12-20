@@ -3,6 +3,7 @@ package com.fishjord.irwidget;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,6 +14,7 @@ public class WelcomeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		Log.d("IRWidget", "====================================");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
 		
