@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		HandleSqlDB.getInstant(this);
+		//HandleSqlDB.getInstant(this);
 		setContentView(R.layout.activity_main);
 	}
     

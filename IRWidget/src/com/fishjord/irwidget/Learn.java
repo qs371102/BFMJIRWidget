@@ -44,11 +44,11 @@ public class Learn extends Activity implements INetworkCallback {
 		super.onCreate(savedInstanceState);
 		hddb=HandleSqlDB.getInstant(this);
 		//Log.d(TAG, "========count:======="+hddb.getContactsCount());
-		//hddb.close();
+		hddb.close();
 		cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
 		//Log.d(TAG, "=======Address:======"+cmdAddress[0]);
 		hddb.close();
-
+		
 		setContentView(R.layout.learn_advance);
 		service=new NetworkService(this);
 		service.delegate=this;

@@ -250,4 +250,9 @@ public class HandleSqlDB {
 		Cursor cursor = database.rawQuery(sql, null);
 		return cursor.getCount();
 	}
+	
+	public boolean ifExistCustomerRemoter()
+	{
+		return false;
+	}
 }

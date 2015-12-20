@@ -1,5 +1,7 @@
 package com.fishjord.irwidget;
 
+import com.bfmj.handledb.HandleSqlDB;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,19 +13,19 @@ public class SplashActivity extends Activity {
 
 	private boolean isFirstLoad=true;
 	//Ã¯“≥—” ±
-	private long delay=50;
-
+	private long mDelay=50;
+	private HandleSqlDB mHsdb=HandleSqlDB.getInstant(this);
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
-
+		HandleSqlDB.getInstant(this);
 		isFirstLoad = isFirstEnter(SplashActivity.this,SplashActivity.this.getClass().getName());
 		if(isFirstLoad)
-			mHandler.sendEmptyMessageDelayed(SWITCH_GUIDACTIVITY,delay);
+			mHandler.sendEmptyMessageDelayed(SWITCH_GUIDACTIVITY,mDelay);
 		else
-			mHandler.sendEmptyMessageDelayed(SWITCH_MAINACTIVITY,delay);
+			mHandler.sendEmptyMessageDelayed(SWITCH_MAINACTIVITY,mDelay);
 	}   
 
 	//****************************************************************
@@ -52,7 +54,10 @@ public class SplashActivity extends Activity {
 			switch(msg.what){
 			case SWITCH_MAINACTIVITY:
 				Intent mIntent = new Intent();
-				mIntent.setClass(SplashActivity.this, MainActivity.class);
+				if(mHsdb.ifExistCustomerRemoter())
+					mIntent.setClass(SplashActivity.this, MainActivity.class);
+				else
+					mIntent.setClass(SplashActivity.this, WelcomeActivity.class);
 				SplashActivity.this.startActivity(mIntent);
 				SplashActivity.this.finish();
 				break;

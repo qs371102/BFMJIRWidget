@@ -34,6 +34,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <string name="begin_learn">去学习</string>
     <string name="begin_match">去匹配</string>
     <string name="no_data">没有遥控！</string>
+    <string name="next">下一步</string>
+    <string name="remoter_type">遥控类型：</string>
+    <string name="remoter_name">遥控名称：</string>
+    <string-array name="remoter_types">
+        <item >电视</item>
+        <item >空调</item>
+        <item >机顶盒</item>
+        <item >其他</item>
+    </string-array>
+    <string name="EXTRE_SELECT_REMOTER_TYPE">extra_select_remoter_type</string>
+    <string name="EXTRA_REMOTER_NAME">extra_remoter_name</string>
     
 
 </resources>
