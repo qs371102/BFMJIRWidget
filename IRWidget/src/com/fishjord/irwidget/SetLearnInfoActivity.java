@@ -1,5 +1,7 @@
 package com.fishjord.irwidget;
 
+import com.bfmj.handledb.HandleSqlDB;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,7 +45,7 @@ public class SetLearnInfoActivity extends Activity
 				}
 				else
 				{
-					Toast.makeText(SetLearnInfoActivity.this, "遥控名称不能为空",Toast.LENGTH_LONG).show();
+					Toast.makeText(SetLearnInfoActivity.this, "遥控名称不能为空 或 存在同名遥控器",Toast.LENGTH_LONG).show();
 				}
 			}
 		});
@@ -73,6 +75,8 @@ public class SetLearnInfoActivity extends Activity
 	private boolean validate()
 	{
 		if(mEtRemoterName.getText().toString().length()==0)
+			return false;
+		if(HandleSqlDB.instance.ifHasSameName(mEtRemoterName.getText().toString()))
 			return false;
 		return true;
 	}

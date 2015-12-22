@@ -29,6 +29,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="14dp"
-        android:text="AddMore" />
+        android:text="添加更多按键" />
 
 </RelativeLayout>

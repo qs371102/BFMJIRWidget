@@ -225,7 +225,7 @@ public class MainActivity extends Activity implements INetworkCallback  {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			mRootView = inflater.inflate(R.layout.fragment_remoter, container, false);
-			
+			 Log.d("IRWidget", "frag on Create");
 			
 			int i = getArguments().getInt(FRAGMENT_NUMBER);
 			
@@ -249,7 +249,7 @@ public class MainActivity extends Activity implements INetworkCallback  {
 			});
 			
 			
-			mlayout.removeAllViewsInLayout();
+			
 			
 			getActivity().setTitle(mSelectedGroup);
 			return mRootView;
@@ -257,6 +257,10 @@ public class MainActivity extends Activity implements INetworkCallback  {
 		
 		 public void onStart() {
 		        super.onStart();
+		        Log.d("IRWidget", "frag on Start");
+		        //清空布局 和数据
+		        mlayout.removeAllViewsInLayout();
+		        mLearnButtons.clear();
 		        // During startup, check if there are arguments passed to the fragment.
 		        // onStart is a good place to do this because the layout has already been
 		        // applied to the fragment at this point so we can safely call the method
@@ -268,6 +272,7 @@ public class MainActivity extends Activity implements INetworkCallback  {
 		        	Cursor cursor= HandleSqlDB.instance.select();
 		    		while(cursor.moveToNext())
 		    		{
+		    			//Log.d("IRWidget", "move next");
 		    			int id=cursor.getInt(cursor.getColumnIndex("id"));
 		    			String name=cursor.getString(cursor.getColumnIndex("name"));
 		    			String display=cursor.getString(cursor.getColumnIndex("display"));

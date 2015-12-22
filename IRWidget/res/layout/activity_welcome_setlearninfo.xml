@@ -45,7 +45,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
         android:ems="10"
-        android:hint="客厅遥控" >
+        android:hint="客厅魔镜" >
 
         <requestFocus />
     </EditText>

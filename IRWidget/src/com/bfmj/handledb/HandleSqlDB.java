@@ -278,11 +278,14 @@ public class HandleSqlDB {
 	public boolean ifHasSameName(String RemoterName)
 	{
 		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-		String sql="select count(*) from "+TABLE_LEARNEDCOMMANDS +" where "+KEY_ROBOTID+"="+robotID +" and "+KEY_GROUP+" = "+RemoterName;
+		String sql="select count(*) from "+TABLE_LEARNEDCOMMANDS +" where "+KEY_ROBOTID+"="+robotID +" and "+KEY_GROUP+" = '"+RemoterName+"'";
 		Cursor cursor = database.rawQuery(sql, null);
 		if(cursor.moveToFirst())
 		{
-			
+			if(cursor.getInt(0)>0)
+				return true;
+			else
+				return false;
 		}
 		return false;
 	}
