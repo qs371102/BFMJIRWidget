@@ -51,8 +51,6 @@ public class Learn extends Activity implements INetworkCallback {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
 
-		tvTitle=(TextView)findViewById(R.id.tvTitle);
-		Log.d(TAG, tvTitle.getText().toString());
 		if(intent.hasExtra("current_remoter_group"))
 		{
 			selectedGroup=intent.getStringExtra("current_remoter_group");
@@ -61,22 +59,14 @@ public class Learn extends Activity implements INetworkCallback {
 		{
 			String extra_select_remoter_type = intent.getStringExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE));
 			String extra_remoter_name=intent.getStringExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME));
-			selectedGroup=extra_select_remoter_type+" "+extra_remoter_name;
-			Log.d(TAG, extra_select_remoter_type+"===="+extra_remoter_name);
-			
-			Log.d(TAG, "selectedGroup:"+selectedGroup);
-			
-			if(tvTitle!=null)
-			{
-				tvTitle.setText("123333333");
-				Log.d(TAG, "====="+selectedGroup);
-			}
+			selectedGroup=extra_remoter_name+" "+extra_select_remoter_type;
 		}
 		
 		setContentView(R.layout.learn_advance);
 		service=new NetworkService(this);
 		service.delegate=this;
 		btLearn=(Button)findViewById(R.id.btLearn);
+		Log.d(TAG, btLearn.getText().toString());
 		btLearn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -168,6 +158,9 @@ public class Learn extends Activity implements INetworkCallback {
 				hddb.close();
 			}
 		});
+		
+		tvTitle=(TextView)findViewById(R.id.tvRT);
+		tvTitle.setText(selectedGroup);
 	}
 
 	void updateSelectedIcon(int pos)

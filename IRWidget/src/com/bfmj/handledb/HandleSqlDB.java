@@ -273,4 +273,17 @@ public class HandleSqlDB {
 		}
 		return false;
 	}
+	
+	//判断是否存在 同名遥控
+	public boolean ifHasSameName(String RemoterName)
+	{
+		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
+		String sql="select count(*) from "+TABLE_LEARNEDCOMMANDS +" where "+KEY_ROBOTID+"="+robotID +" and "+KEY_GROUP+" = "+RemoterName;
+		Cursor cursor = database.rawQuery(sql, null);
+		if(cursor.moveToFirst())
+		{
+			
+		}
+		return false;
+	}
 }
