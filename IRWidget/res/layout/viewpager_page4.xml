@@ -9,7 +9,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/start" />
+        android:src="@drawable/jupiter" />
 
      <Button
          android:id="@+id/btn_close_guide"

@@ -16,13 +16,13 @@ import android.widget.Spinner;
 
 public class SetLearnInfoActivity extends Activity
 {
-//	private static String EXTRE_SELECT_REMOTER_TYPE;
-//	private static String EXTRA_REMOTER_NAME;
+	//	private static String EXTRE_SELECT_REMOTER_TYPE;
+	//	private static String EXTRA_REMOTER_NAME;
 	private Button mBtNext;
 	private Spinner mSpRemoterType;
 	private EditText mEtRemoterName;
 	private String mSelectType;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -30,27 +30,24 @@ public class SetLearnInfoActivity extends Activity
 		setContentView(R.layout.activity_welcome_setlearninfo);
 		mBtNext=(Button)findViewById(R.id.btNext);
 		mBtNext.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
-				
 				// TODO Auto-generated method stub
 				if(validate())
 				{
 					Log.d("IRWidget", "=============oooooooo============");
 					Intent intent=new Intent(SetLearnInfoActivity.this,Learn.class);
-					intent.putExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE),mEtRemoterName.getText());
-					intent.putExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME),mEtRemoterName.getText());
+					intent.putExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE),mSelectType);
+					intent.putExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME),mEtRemoterName.getText().toString());
 					startActivity(intent);
 				}
-				
 			}
 		});
 		final String[] types=getResources().getStringArray(R.array.remoter_types);
 		mSpRemoterType=(Spinner)findViewById(R.id.spRemoterType);
 		ArrayAdapter<String> adp=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,types);
 		mSpRemoterType.setAdapter(adp);
-		
+
 		mSpRemoterType.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -65,9 +62,9 @@ public class SetLearnInfoActivity extends Activity
 				mSelectType=types[0];
 			}
 		});
-		
+
 		mEtRemoterName=(EditText)findViewById(R.id.etRemoterName);
-		
+
 	}
 	private boolean validate()
 	{

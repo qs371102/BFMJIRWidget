@@ -2,6 +2,7 @@ package com.fishjord.irwidget;
 
 import com.bfmj.byteandstringtools.ByteAndStringTools;
 import com.bfmj.handledb.HandleSqlDB;
+import com.bfmj.handledevices.HandleDevices;
 import com.bfmj.network.INetworkCallback;
 import com.bfmj.network.NetworkService;
 import com.fishjord.irwidget.ir.codes.ControlCommand;
@@ -138,7 +139,10 @@ public class Learn extends Activity implements INetworkCallback {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				Intent intent=new Intent(Learn.this,MainActivity.class);
+				//intent.putExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME),mEtRemoterName.getText());
+				startActivity(intent);
+				Learn.this.finish();
 			}
 		});
 		
@@ -164,7 +168,7 @@ public class Learn extends Activity implements INetworkCallback {
 				LearnedCommand lc=new LearnedCommand(cmdAddress[0],cmdData.trim());
 				btLearn.setEnabled(true);
 				btSave.setEnabled(false);
-				LearnedButton lb = new LearnedButton( et.getText().toString(),selectedIcon,selectedGroup,lc);
+				LearnedButton lb = new LearnedButton( et.getText().toString(),selectedIcon,selectedGroup,lc,HandleDevices.getRobotID());
 				hddb.insert(lb);
 				hddb.close();
 			}

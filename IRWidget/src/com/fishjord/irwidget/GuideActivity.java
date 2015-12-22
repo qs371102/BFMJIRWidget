@@ -2,6 +2,8 @@ package com.fishjord.irwidget;
 
 import java.util.ArrayList;
 
+import com.bfmj.handledb.HandleSqlDB;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -92,8 +94,13 @@ public class GuideActivity extends Activity {
             setGuided();
              
             //Ìø×ª
+            
+          
             Intent mIntent = new Intent();
-            mIntent.setClass(GuideActivity.this, MainActivity.class);
+            if(HandleSqlDB.instance.ifExistCustomerRemoter())
+				mIntent.setClass(GuideActivity.this, MainActivity.class);
+			else
+				mIntent.setClass(GuideActivity.this, WelcomeActivity.class);
             GuideActivity.this.startActivity(mIntent);
             GuideActivity.this.finish();
         }

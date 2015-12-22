@@ -45,6 +45,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     </string-array>
     <string name="EXTRE_SELECT_REMOTER_TYPE">extra_select_remoter_type</string>
     <string name="EXTRA_REMOTER_NAME">extra_remoter_name</string>
-    
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+     <string name="green_dot">greendot</string>
+      <string name="purple_dot">purpledot</string>
 
 </resources>

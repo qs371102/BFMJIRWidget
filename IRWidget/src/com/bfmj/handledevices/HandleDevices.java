@@ -11,5 +11,9 @@ public class HandleDevices {
 	{
 		return "MJRobot";
 	}
-
+	
+	public static int getRobotID()
+	{
+		return 1;
+	}
 }

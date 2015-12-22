@@ -66,7 +66,8 @@ public class ShowLearned extends Activity implements INetworkCallback {
 			int address=cursor.getInt(cursor.getColumnIndex("address"));
 			String onAndOffs=cursor.getString(cursor.getColumnIndex("command"));
 			LearnedCommand lc=new LearnedCommand(address, onAndOffs);
-			LearnedButton lb=new LearnedButton(name, display, group, lc);
+			int robotId=cursor.getInt(cursor.getColumnIndex("robotid"));
+			LearnedButton lb=new LearnedButton(name, display, group, lc,robotId);
 			lb.id=id;
 			lbs.add(lb);
 		}

@@ -14,7 +14,6 @@ public class SplashActivity extends Activity {
 	private boolean isFirstLoad=true;
 	//Ã¯“≥—” ±
 	private long mDelay=50;
-	private HandleSqlDB mHsdb=HandleSqlDB.getInstant(this);
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -54,7 +53,7 @@ public class SplashActivity extends Activity {
 			switch(msg.what){
 			case SWITCH_MAINACTIVITY:
 				Intent mIntent = new Intent();
-				if(mHsdb.ifExistCustomerRemoter())
+				if(HandleSqlDB.instance.ifExistCustomerRemoter())
 					mIntent.setClass(SplashActivity.this, MainActivity.class);
 				else
 					mIntent.setClass(SplashActivity.this, WelcomeActivity.class);
