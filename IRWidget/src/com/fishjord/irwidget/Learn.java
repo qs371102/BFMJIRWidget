@@ -30,29 +30,39 @@ public class Learn extends Activity implements INetworkCallback {
 	private String cmdData="";
 	String TAG = "IRWidget";
 	private String selectedIcon;
+
+
 	private String selectedGroup;
 
 	private String[] icons;
 
-	private String[] groups;
 
 	private HandleSqlDB hddb;
 
 	private Button btLearn;
 	private Button btSave;
 	private Button btFinish;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-        String extra_select_remoter_type = intent.getStringExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE));
-        String extra_remoter_name=intent.getStringExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME));
-        
-        selectedGroup=extra_select_remoter_type+" "+extra_remoter_name;
-        Log.d(TAG, extra_select_remoter_type+"===="+extra_remoter_name);
-		
-		
+
+
+		if(intent.hasExtra("current_remoter_group"))
+		{
+			selectedGroup=intent.getStringExtra("current_remoter_group");
+		}
+		else
+		{
+			String extra_select_remoter_type = intent.getStringExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE));
+			String extra_remoter_name=intent.getStringExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME));
+			selectedGroup=extra_select_remoter_type+" "+extra_remoter_name;
+			Log.d(TAG, extra_select_remoter_type+"===="+extra_remoter_name);
+		}
+
+
+
 		setContentView(R.layout.learn_advance);
 		service=new NetworkService(this);
 		service.delegate=this;
@@ -67,7 +77,7 @@ public class Learn extends Activity implements INetworkCallback {
 				int[] datas=cmdAddress;
 				ControlCommand command=new ControlCommand(cmd, datas,true,true,true);
 				service.sendControlCommand(command);
-				
+
 				new android.os.Handler().postDelayed(
 						new Runnable() {
 							public void run() {
@@ -81,29 +91,27 @@ public class Learn extends Activity implements INetworkCallback {
 
 		icons=new String[]{"Vol+","Vol-","^","v","Power","Menu","Mute","Ok"};
 
-		groups=new String[]{"TV","Air Conditioning","Refrigerator","Other"};
-		
 		selectedIcon=icons[0];
 		//·Ö×é Spinner
 
-//		Spinner spGroup=(Spinner)findViewById(R.id.spGroup);
-//		ArrayAdapter<String> spGroupArrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,groups);
-//		spGroupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//		spGroup.setAdapter(spGroupArrayAdapter);
-//		spGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
-//
-//			@Override
-//			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//				// TODO Auto-generated method stub
-//				selectedGroup=groups[pos];
-//			}
-//
-//			@Override
-//			public void onNothingSelected(AdapterView<?> parent) {
-//				// TODO Auto-generated method stub
-//				selectedGroup=groups[0];
-//			}
-//		});
+		//		Spinner spGroup=(Spinner)findViewById(R.id.spGroup);
+		//		ArrayAdapter<String> spGroupArrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,groups);
+		//		spGroupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		//		spGroup.setAdapter(spGroupArrayAdapter);
+		//		spGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
+		//
+		//			@Override
+		//			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+		//				// TODO Auto-generated method stub
+		//				selectedGroup=groups[pos];
+		//			}
+		//
+		//			@Override
+		//			public void onNothingSelected(AdapterView<?> parent) {
+		//				// TODO Auto-generated method stub
+		//				selectedGroup=groups[0];
+		//			}
+		//		});
 
 
 
@@ -135,7 +143,7 @@ public class Learn extends Activity implements INetworkCallback {
 		});
 		btFinish=(Button)findViewById(R.id.btFinish);
 		btFinish.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -145,9 +153,9 @@ public class Learn extends Activity implements INetworkCallback {
 				Learn.this.finish();
 			}
 		});
-		
-		
-		
+
+
+
 		btSave=(Button)findViewById(R.id.btSave);
 		btSave.setEnabled(false);
 		btSave.setOnClickListener(new OnClickListener() {
@@ -163,7 +171,7 @@ public class Learn extends Activity implements INetworkCallback {
 				}
 				if(hddb==null)
 					hddb=HandleSqlDB.getInstant(Learn.this);
-				
+
 				cmdAddress[0]=(byte)hddb.getAddressToLearnCommand();
 				LearnedCommand lc=new LearnedCommand(cmdAddress[0],cmdData.trim());
 				btLearn.setEnabled(true);

@@ -31,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
@@ -150,6 +151,14 @@ public class MainActivity extends Activity implements INetworkCallback  {
 
 	private void selectItem(int position) {
 		// update the main content by replacing fragments
+		String selectItem=mRemoterTitles.get(position);
+		if(selectItem.equals("Ìí¼ÓÒ£¿ØÆ÷+"))
+		{
+			Intent mIntent=new Intent();
+			mIntent.setClass(MainActivity.this, SetLearnInfoActivity.class);
+			MainActivity.this.startActivity(mIntent);
+			return;
+		}
 		Fragment fragment = new RemoterFragment();
 		Bundle args = new Bundle();
 		args.putInt(RemoterFragment.FRAGMENT_NUMBER, position);
@@ -207,6 +216,7 @@ public class MainActivity extends Activity implements INetworkCallback  {
 		private List<LearnedButton> mLearnButtons=new ArrayList<LearnedButton>(); 
 		private String mSelectedGroup;
 		
+		private Button btAddMore;
 		public RemoterFragment() {
 			// Empty constructor required for fragment subclasses
 		}
@@ -222,6 +232,22 @@ public class MainActivity extends Activity implements INetworkCallback  {
 			mSelectedGroup=getArguments().getString(FRAGMENT_TITLE);
 			mContext=container.getContext();
 			mlayout = (RelativeLayout) mRootView.findViewById(R.id.BtnLayout);
+			
+			
+			btAddMore=(Button)mRootView.findViewById(R.id.BtnAddMore);
+			btAddMore.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					Intent mIntent=new Intent();
+					mIntent.setClass(mContext, Learn.class);
+					//TODO 
+					mIntent.putExtra("current_remoter_group",mSelectedGroup);
+					startActivity(mIntent);
+				}
+			});
+			
 			
 			mlayout.removeAllViewsInLayout();
 			

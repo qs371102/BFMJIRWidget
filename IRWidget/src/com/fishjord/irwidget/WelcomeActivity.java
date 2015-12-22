@@ -27,6 +27,7 @@ public class WelcomeActivity extends Activity {
 				Intent mIntent = new Intent();
 				mIntent.setClass(WelcomeActivity.this, SetLearnInfoActivity.class);
 				WelcomeActivity.this.startActivity(mIntent);
+				WelcomeActivity.this.finish();
 			}
 		});
 		mBtBeginMatch=(Button)findViewById(R.id.btBeginMatch);
