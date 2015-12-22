@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -42,13 +43,16 @@ public class Learn extends Activity implements INetworkCallback {
 	private Button btLearn;
 	private Button btSave;
 	private Button btFinish;
+	
+	private TextView tvTitle;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
 
-
+		tvTitle=(TextView)findViewById(R.id.tvTitle);
+		Log.d(TAG, tvTitle.getText().toString());
 		if(intent.hasExtra("current_remoter_group"))
 		{
 			selectedGroup=intent.getStringExtra("current_remoter_group");
@@ -59,10 +63,16 @@ public class Learn extends Activity implements INetworkCallback {
 			String extra_remoter_name=intent.getStringExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME));
 			selectedGroup=extra_select_remoter_type+" "+extra_remoter_name;
 			Log.d(TAG, extra_select_remoter_type+"===="+extra_remoter_name);
+			
+			Log.d(TAG, "selectedGroup:"+selectedGroup);
+			
+			if(tvTitle!=null)
+			{
+				tvTitle.setText("123333333");
+				Log.d(TAG, "====="+selectedGroup);
+			}
 		}
-
-
-
+		
 		setContentView(R.layout.learn_advance);
 		service=new NetworkService(this);
 		service.delegate=this;
@@ -92,29 +102,6 @@ public class Learn extends Activity implements INetworkCallback {
 		icons=new String[]{"Vol+","Vol-","^","v","Power","Menu","Mute","Ok"};
 
 		selectedIcon=icons[0];
-		//·Ö×é Spinner
-
-		//		Spinner spGroup=(Spinner)findViewById(R.id.spGroup);
-		//		ArrayAdapter<String> spGroupArrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,groups);
-		//		spGroupArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		//		spGroup.setAdapter(spGroupArrayAdapter);
-		//		spGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
-		//
-		//			@Override
-		//			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-		//				// TODO Auto-generated method stub
-		//				selectedGroup=groups[pos];
-		//			}
-		//
-		//			@Override
-		//			public void onNothingSelected(AdapterView<?> parent) {
-		//				// TODO Auto-generated method stub
-		//				selectedGroup=groups[0];
-		//			}
-		//		});
-
-
-
 
 		//Í¼±ê Spinner
 		Spinner spinner = (Spinner) findViewById(R.id.spIcon);

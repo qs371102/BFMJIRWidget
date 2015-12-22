@@ -24,7 +24,7 @@ public class HandleSqlDB {
 
 	private static String outFileName = DATABASE_PATH + "/" + DATABASE_NAME;
 
-	private static final String TABLE_CONTACTS="LearnedCommands";
+	private static final String TABLE_LEARNEDCOMMANDS="LearnedCommands";
 	
 	private static int MIN_ADDRESS=1;
 	private static int MAX_ADDRESS=63;
@@ -118,7 +118,7 @@ public class HandleSqlDB {
 	 */
 	public Cursor select() {
 		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-		String sql = "select * from "+TABLE_CONTACTS +" where "+KEY_ROBOTID+"="+robotID;
+		String sql = "select * from "+TABLE_LEARNEDCOMMANDS +" where "+KEY_ROBOTID+"="+robotID;
 
 		Cursor cursor = database.rawQuery(sql, null);
 		return cursor;
@@ -127,7 +127,7 @@ public class HandleSqlDB {
 //	public Cursor getMaxAddress()
 //	{
 //		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-//		String sql = "select max("+KEY_ADDRESS+")+1 from "+TABLE_CONTACTS+"where "+KEY_ADDRESS+"+1 between 1 and 63";
+//		String sql = "select max("+KEY_ADDRESS+")+1 from "+TABLE_LEARNEDCOMMANDS+"where "+KEY_ADDRESS+"+1 between 1 and 63";
 //		Cursor cursor = database.rawQuery(sql, null);
 //		return cursor;
 //	}
@@ -135,7 +135,7 @@ public class HandleSqlDB {
 	public int getMaxAddress()
 	{
 		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-		String sql = "select max("+KEY_ADDRESS+") from "+TABLE_CONTACTS +" where "+KEY_ROBOTID+"="+robotID;
+		String sql = "select max("+KEY_ADDRESS+") from "+TABLE_LEARNEDCOMMANDS +" where "+KEY_ROBOTID+"="+robotID;
 		Cursor cursor = database.rawQuery(sql, null);
 		if(cursor.moveToFirst())
 		{
@@ -150,7 +150,7 @@ public class HandleSqlDB {
 	//
 	public Cursor selectMaxAddress() {
 		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-		String sql = "select max("+KEY_ADDRESS+")+1 from "+TABLE_CONTACTS+" where "+KEY_ADDRESS+"+1 between 1 and 63 and "+KEY_ROBOTID+"="+robotID;
+		String sql = "select max("+KEY_ADDRESS+")+1 from "+TABLE_LEARNEDCOMMANDS+" where "+KEY_ADDRESS+"+1 between 1 and 63 and "+KEY_ROBOTID+"="+robotID;
 		Cursor cursor = database.rawQuery(sql, null);
 		return cursor;
 	}
@@ -170,7 +170,7 @@ public class HandleSqlDB {
 		cv.put(KEY_ADDRESS, lb.getLearnCommand().getAddress());
 		cv.put(KEY_ROBOTID, lb.getRobotId());
 		Log.d("IRWidget", lb.getName()+"  "+ lb.getDisplay()+" OnAndOffs: "+lb.getLearnCommand().getOnAndOffs()+" "+lb.getLearnCommand().getAddress()+" "+lb.getRobotId());
-		long result = database.insert(TABLE_CONTACTS, null, cv);	
+		long result = database.insert(TABLE_LEARNEDCOMMANDS, null, cv);	
 		return result;
 	}
 
@@ -188,7 +188,7 @@ public class HandleSqlDB {
 	//			ContentValues cv = new ContentValues();
 	//			cv.put("note", note);
 	//			
-	//			int result = database.update(TABLE_CONTACTS, cv, "word=?", new String[]{word});
+	//			int result = database.update(TABLE_LEARNEDCOMMANDS, cv, "word=?", new String[]{word});
 	//			
 	//			return result;
 	//		}
@@ -198,7 +198,7 @@ public class HandleSqlDB {
 	 */
 	public int delete(String id) {
 		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-		int result = database.delete(TABLE_CONTACTS, "id=?", new String[]{id});
+		int result = database.delete(TABLE_LEARNEDCOMMANDS, "id=?", new String[]{id});
 		return result;
 	}
 	
@@ -246,8 +246,7 @@ public class HandleSqlDB {
 	public Cursor getGroups()
 	{
 		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-		String sql = "select distinct buttonGroup from "+TABLE_CONTACTS+" where "+KEY_ROBOTID+"="+robotID;
-		Log.d("IRWidget", "========"+sql);
+		String sql = "select distinct buttonGroup from "+TABLE_LEARNEDCOMMANDS+" where "+KEY_ROBOTID+"="+robotID;
 		Cursor cursor = database.rawQuery(sql, null);
 		return cursor;
 	}
@@ -255,13 +254,23 @@ public class HandleSqlDB {
 	public int getContactsCount() {
 		
 		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
-		String sql = "select * from "+TABLE_CONTACTS +" where "+KEY_ROBOTID+"="+robotID;
+		String sql = "select * from "+TABLE_LEARNEDCOMMANDS +" where "+KEY_ROBOTID+"="+robotID;
 		Cursor cursor = database.rawQuery(sql, null);
 		return cursor.getCount();
 	}
 	
 	public boolean ifExistCustomerRemoter()
 	{
+		database = SQLiteDatabase.openOrCreateDatabase(outFileName, null);
+		String sql="select count(*) from "+TABLE_LEARNEDCOMMANDS +" where "+KEY_ROBOTID+"="+robotID;
+		Cursor cursor = database.rawQuery(sql, null);
+		if(cursor.moveToFirst())
+		{
+			if(cursor.getInt(0)>0)
+				return true;
+			else
+				return false;
+		}
 		return false;
 	}
 }

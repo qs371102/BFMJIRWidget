@@ -32,6 +32,5 @@ public class WelcomeActivity extends Activity {
 		});
 		mBtBeginMatch=(Button)findViewById(R.id.btBeginMatch);
 		mBtBeginMatch.setEnabled(false);
-		
 	}
 }

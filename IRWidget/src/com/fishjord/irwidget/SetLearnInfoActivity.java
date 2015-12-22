@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 public class SetLearnInfoActivity extends Activity
@@ -35,11 +36,14 @@ public class SetLearnInfoActivity extends Activity
 				// TODO Auto-generated method stub
 				if(validate())
 				{
-					Log.d("IRWidget", "=============oooooooo============");
 					Intent intent=new Intent(SetLearnInfoActivity.this,Learn.class);
 					intent.putExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE),mSelectType);
 					intent.putExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME),mEtRemoterName.getText().toString());
 					startActivity(intent);
+				}
+				else
+				{
+					Toast.makeText(SetLearnInfoActivity.this, "遥控名称不能为空",Toast.LENGTH_LONG).show();
 				}
 			}
 		});
@@ -68,7 +72,7 @@ public class SetLearnInfoActivity extends Activity
 	}
 	private boolean validate()
 	{
-		if(mEtRemoterName.getText().equals(""))
+		if(mEtRemoterName.getText().toString().length()==0)
 			return false;
 		return true;
 	}
