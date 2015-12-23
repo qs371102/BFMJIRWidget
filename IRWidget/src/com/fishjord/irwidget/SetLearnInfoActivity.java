@@ -38,7 +38,8 @@ public class SetLearnInfoActivity extends Activity
 				// TODO Auto-generated method stub
 				if(validate())
 				{
-					Intent intent=new Intent(SetLearnInfoActivity.this,Learn.class);
+					Log.d("IRWidget","==========To LocalLearn==========");
+					Intent intent=new Intent(SetLearnInfoActivity.this,LocalLearnActivity.class);
 					intent.putExtra(getResources().getString(R.string.EXTRE_SELECT_REMOTER_TYPE),mSelectType);
 					intent.putExtra(getResources().getString(R.string.EXTRA_REMOTER_NAME),mEtRemoterName.getText().toString());
 					startActivity(intent);

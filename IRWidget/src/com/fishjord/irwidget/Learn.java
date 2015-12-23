@@ -26,13 +26,14 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Learn extends Activity implements INetworkCallback {
 
+	//private static boolean mLocalLearnMode=true;
+	//
 	private NetworkService service;
 	private int[] cmdAddress=new int[]{0x00};
 	private String cmdData="";
 	String TAG = "IRWidget";
 	private String selectedIcon;
-
-
+	//
 	private String selectedGroup;
 
 	private String[] icons;
