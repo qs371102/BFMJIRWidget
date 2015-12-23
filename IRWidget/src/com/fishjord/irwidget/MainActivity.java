@@ -221,6 +221,7 @@ public class MainActivity extends Activity implements INetworkCallback  {
 			// Empty constructor required for fragment subclasses
 		}
 
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
