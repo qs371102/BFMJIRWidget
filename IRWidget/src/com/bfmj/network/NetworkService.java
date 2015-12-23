@@ -12,14 +12,17 @@ import android.app.Activity;
 
 import com.fishjord.irwidget.ir.codes.ControlCommand;
 import com.fishjord.irwidget.ir.codes.IRCommand;
+import com.fishjord.irwidget.ir.codes.LearnedCommand;
+import com.bfmj.handledevices.HandleDevices;
 
 //import android.app.Activity;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+
 import android.widget.Toast;
+
 
 public class NetworkService implements INetworkService {
 	
@@ -33,7 +36,18 @@ public class NetworkService implements INetworkService {
     private Handler mBusHandler;
     private Activity mContainer;
     
-    public String TargetID="Bfmj";
+    private static String selfID; 
+    private static String targetID;
+    
+    
+    public void SetTargetID(String id)
+    {
+    	this.targetID=id;
+    }
+    
+    
+    
+    public INetworkCallback delegate;
     /*
 	public static NetworkService getInstance(Activity activity)
 	{
@@ -53,6 +67,10 @@ public class NetworkService implements INetworkService {
         busThread.start();
         mBusHandler = new Handler(busThread.getLooper(),new BusHandlerCallback()); 
         mBusHandler.sendEmptyMessage(BusHandlerCallback.CONNECT);
+        //TODO 
+        selfID=HandleDevices.getSelfID();
+        targetID=HandleDevices.getTargetID();
+        
         
 	}
     
@@ -60,14 +78,14 @@ public class NetworkService implements INetworkService {
 	public void sendCommand(IRCommand command) {
 		// TODO Auto-generated method stub
 		Message msg = mBusHandler.obtainMessage(BusHandlerCallback.CHAT,
-                new PingInfo(TargetID,command.toString()));
+                new PingInfo(selfID,targetID+":"+command.toString()));
 		mBusHandler.sendMessage(msg);
 	}
 	
 	@Override
 	public void sendControlCommand(ControlCommand command){
 		Message msg = mBusHandler.obtainMessage(BusHandlerCallback.CHAT,
-                new PingInfo(TargetID,command.toString()));
+                new PingInfo(selfID,targetID+":"+command.toString()));
 		mBusHandler.sendMessage(msg);
 	}
 	
@@ -111,7 +129,9 @@ public class NetworkService implements INetworkService {
                 break;
             case MESSAGE_POST_TOAST:
                 /* Post a toast to the UI */
-                Toast.makeText(mContainer.getApplicationContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContainer.getApplicationContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
+                if(delegate!=null)
+                	delegate.receiveData((String)msg.obj);
                 break;
             default:
                 break;
@@ -139,7 +159,7 @@ public class NetworkService implements INetworkService {
         @BusSignalHandler(iface = "org.alljoyn.bus.samples.slchat", signal = "Chat")
         public void Chat(String senderName, String message) {
             Log.i(TAG, "Signal  : " + senderName +": "+ message);
-            sendUiMessage(MESSAGE_CHAT, senderName + ": "+ message);
+            sendUiMessage(MESSAGE_CHAT, senderName + ":"+ message);
         }
 
         /* Helper function to send a message to the UI thread. */
@@ -287,5 +307,24 @@ public class NetworkService implements INetworkService {
         mHandler.sendMessage(toastMsg);
         Log.e(TAG, log, ex);
     }
+    
+  //判断是否是本设备的命令
+  	public static boolean isMine(String sign)
+  	{
+  		if(sign.trim().equals(selfID))
+  		{
+  			return true;
+  		}
+  		else
+  			return false;
+  	}
+
+	@Override
+	public void sendLearnedCommand(LearnedCommand command) {
+		// TODO Auto-generated method stub
+		Message msg = mBusHandler.obtainMessage(BusHandlerCallback.CHAT,
+                new PingInfo(selfID,targetID+":"+command.toString()));
+		mBusHandler.sendMessage(msg);
+	}
 
 }

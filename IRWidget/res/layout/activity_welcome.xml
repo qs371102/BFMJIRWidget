@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <Button
+        android:id="@+id/btBeginMatch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="158dp"
+        android:text="@string/begin_match" />
+
+    <Button
+        android:id="@+id/btBeginLearn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btBeginMatch"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="90dp"
+        android:text="@string/begin_learn" />
+
+    <TextView
+        android:id="@+id/tvRmoterType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="65dp"
+        android:text="@string/no_data" />
+
+</RelativeLayout>

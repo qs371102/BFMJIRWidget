@@ -7,10 +7,9 @@ public class ControlCommand {
 	private String TAG="BFMJ";
 	
 	private int cmd;
-
-	//UseXor=false 时 为下载模式 
+	
 	private int[] reservedField=new int[]{0,0};
-	// 地址长度为一个字节
+	
 	private int[] address;
 	//----------------------------
 	private int[] onOffs;
@@ -18,13 +17,16 @@ public class ControlCommand {
 	private boolean useXor=true;
 	private boolean useRF=true;
 	private int xor;
-	private boolean needCallBack=false;
 	
+	private boolean needCallBack=false;
+	private static String stringToAppend=" ";
+	//TODO needCallback
 	public ControlCommand(int cmd,int[] datas,boolean useXor,boolean useRF,boolean needCallback)
 	{
 		this.useXor=useXor;
 		this.useRF=useRF;
 		this.cmd=cmd;
+		this.needCallBack=needCallback;
 		if(this.useXor)
 		{
 			this.address=datas;
@@ -49,7 +51,7 @@ public class ControlCommand {
 	{
 		return this.cmd;
 	}
-	//异或
+	//寮傛垨
 	private void formXor()
 	{
 		if(this.useXor)
@@ -70,30 +72,30 @@ public class ControlCommand {
 	public String toString()
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append(cmd).append(",");
+		ret.append(String.format("%02x",cmd)).append(stringToAppend);
 		if(useXor)
 		{
 			for(int index = 0;index < address.length;index++) {
-				ret.append(address[index]);
-				ret.append(",");
+				ret.append(String.format("%02x", address[index]));
+				ret.append(stringToAppend);
 			}
 			if(useRF)
 			for(int index = 0;index < reservedField.length;index++) {
-				ret.append(reservedField[index]);
-				ret.append(",");
+				ret.append(String.format("%02x",reservedField[index]));
+				ret.append(stringToAppend);
 			}
-			ret.append(xor);
+			ret.append(String.format("%02x",xor));
 		}
 		else
 		{
 			for(int index = 0;index < onOffs.length;index++) {
-				ret.append(onOffs[index]);
+				ret.append(String.format("%02x",onOffs[index]));
 				if(index + 1 != onOffs.length) {
-					ret.append(",");
+					ret.append(stringToAppend);
 				}
 			}
 		}
-		
+		ret.append(":"+String.valueOf(needCallBack));
 		Log.d(TAG, ret.toString());
 		return ret.toString();
 	}

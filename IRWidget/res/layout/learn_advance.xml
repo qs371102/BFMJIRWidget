@@ -5,12 +5,28 @@
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/tvRT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="客厅小米 电视"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow6"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
+            android:id="@+id/btLearn"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="开始学习" />
 
     </TableRow>
@@ -18,43 +34,78 @@
     <TableRow
         android:id="@+id/tableRow2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvNote"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="备注："
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
-            android:id="@+id/editText1"
-            android:layout_width="wrap_content"
+            android:id="@+id/etNote"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ems="10" >
 
             <requestFocus />
         </EditText>
+    </TableRow>
 
-    </TableRow>    
-    
     <TableRow
         android:id="@+id/tableRow3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/tvIcon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="图标："
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Spinner
+            android:id="@+id/spIcon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow4"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btFinish"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="保存" />
+            android:text="结束" />
 
     </TableRow>
 
+    <TableRow
+        android:id="@+id/tableRow5"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clickable="false" >
 
-
-   
+        <Button
+            android:id="@+id/btSave"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:text="保存" />
+    </TableRow>
 
 </TableLayout>

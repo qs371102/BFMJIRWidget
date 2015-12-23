@@ -1,0 +1,1 @@
+CREATE TABLE "LearnedCommands" (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, display TEXT, command TEXT, buttonGroup TEXT, address INTEGER, robotid INTEGER, preserve TEXT)
