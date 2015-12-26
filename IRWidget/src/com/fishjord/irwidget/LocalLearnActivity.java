@@ -78,7 +78,7 @@ private static String stringToSplite="\\s+";
 	private PL2303Driver.FlowControl mFlowControl = PL2303Driver.FlowControl.OFF;
 
 
-	private static final String ACTION_USB_PERMISSION = "com.prolific.pl2303hxdsimpletest.USB_PERMISSION";
+	private static final String ACTION_USB_PERMISSION = "com.fishjord.irwidget.USB_PERMISSION";
 
 	private static final String NULL = null;   
 
