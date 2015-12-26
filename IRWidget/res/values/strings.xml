@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">IRWidget</string>
-    <string name="action_learn">学习</string><string name="action_showlearned">我的遥控</string><string name="action_settings">设置</string>
+    <string name="action_client">Client</string><string name="action_settings">设置</string>
     <string name="action_about">关于</string>
     <string name="action_license">证书</string>
     <string name="appwidget_text">EXAMPLE</string>

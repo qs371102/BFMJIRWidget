@@ -1,17 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
     
-    <item android:id="@+id/action_showlearned" 
-        android:title="@string/action_showlearned" 
+    
+    <item android:id="@+id/action_client" 
         android:orderInCategory="100" 
-        android:showAsAction="never"
-        />
-    
-    
-    
-    <item android:id="@+id/action_learn" 
-        android:orderInCategory="100" 
-        android:title="@string/action_learn" 
+        android:title="@string/action_client" 
         android:showAsAction="never"
         />
         
