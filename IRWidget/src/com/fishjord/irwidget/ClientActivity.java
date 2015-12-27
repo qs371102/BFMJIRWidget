@@ -237,8 +237,8 @@ public class ClientActivity extends Activity implements INetworkCallback {
 
 	@Override
 	public void receiveData(String data) {
-		Log.d(DT, "receive command:"+data);
-		String strWrite = data;
+		Toast.makeText(this,  "receive=== command:"+data,Toast.LENGTH_SHORT).show();;
+		//String strWrite = data;
 
 		byte[] datas=parseStringToData(data);
 		if(datas==null)
