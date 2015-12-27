@@ -80,9 +80,7 @@ public class ClientActivity extends Activity implements INetworkCallback {
 	// Linefeed
 	//    private final static String BR = System.getProperty("line.separator");
 
-	public Spinner PL2303HXD_BaudRate_spinner;
-	public int PL2303HXD_BaudRate;
-	public String PL2303HXD_BaudRate_str="B4800";
+	public String PL2303HXD_BaudRate_str="9600";
 
 	private String strStr;
 
@@ -170,16 +168,26 @@ public class ClientActivity extends Activity implements INetworkCallback {
 				Log.d(TAG, "onResume:enumerate succeeded!");
 			}    		 
 		}//if isConnected  
-		else
-			Toast.makeText(this, "attached", Toast.LENGTH_SHORT).show();
+		else if (!mSerial.InitByBaudRate(mBaudrate,700)) {
+				if(!mSerial.PL2303Device_IsHasPermission()) {
+					Toast.makeText(this, "cannot open, maybe no permission", Toast.LENGTH_SHORT).show();		
+				}
 
+				if(mSerial.PL2303Device_IsHasPermission() && (!mSerial.PL2303Device_IsSupportChip())) {
+					Toast.makeText(this, "cannot open, maybe this chip has no support, please use PL2303HXD / RA / EA chip.", Toast.LENGTH_SHORT).show();
+				}
+			} else {        	
+
+				Toast.makeText(this, "connected : " , Toast.LENGTH_SHORT).show(); 	
+
+			}
 		Log.d(TAG, "Leave onResume"); 
 	}        
 
 	private void openUsbSerial() {
 		Log.d(TAG, "Enter  openUsbSerial");
 
-		Toast.makeText(this, "open======:"+String.valueOf(mSerial.isConnected()), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "open==connected====:"+String.valueOf(mSerial.isConnected()), Toast.LENGTH_SHORT).show();
 		if(null==mSerial)
 			return;   	 
 
@@ -187,7 +195,7 @@ public class ClientActivity extends Activity implements INetworkCallback {
 			if (SHOW_DEBUG) {
 				Log.d(TAG, "openUsbSerial : isConnected ");
 			}
-			String str = PL2303HXD_BaudRate_spinner.getSelectedItem().toString();
+			String str = PL2303HXD_BaudRate_str;
 			int baudRate= Integer.parseInt(str);
 			switch (baudRate) {
 			case 9600:
@@ -229,7 +237,6 @@ public class ClientActivity extends Activity implements INetworkCallback {
 
 	@Override
 	public void receiveData(String data) {
-		// TODO Auto-generated method stub
 		Log.d(DT, "receive command:"+data);
 		String strWrite = data;
 
@@ -265,27 +272,6 @@ public class ClientActivity extends Activity implements INetworkCallback {
 		}
 	}
 
-
-
-	//	Handler networkMessageHandler = new Handler() {
-	//		public void handleMessage(Message msg) {
-	//			mService.sendCommand(msg.obj.toString());
-	//			super.handleMessage(msg);
-	//		}//handleMessage
-	//	};
-	//	
-	//	private void Send_Network_Message(String mmsg) {
-	//		Message m= new Message();
-	//		m.obj = mmsg;
-	//		networkMessageHandler.sendMessage(m);
-	//		Log.d(TAG, String.format("Msg index: %04x", mmsg));
-	//		try {
-	//			Thread.sleep(1000);
-	//		} catch (InterruptedException e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
-
 	private Runnable tReadCallback = new Runnable() {
 		public void run() {	
 			finalCallBackData=new ArrayList<Byte>();
@@ -308,18 +294,16 @@ public class ClientActivity extends Activity implements INetworkCallback {
 		}
 	};
 
-	//TODO tmp
-
 	public byte[] parseStringToData(String data)
 	{
+		Toast.makeText(this, "cmd:"+data, Toast.LENGTH_SHORT).show();
 		final String[] datas = data.split(":");
 
 		if(datas.length==4)
 		{
 
 			mService.SetTargetID(datas[0]);
-//TODO
-			if(!NetworkService.isMine(datas[1])&&false)
+			if(!NetworkService.isMine(datas[1]))
 			{
 				return null;
 			}
@@ -374,9 +358,6 @@ public class ClientActivity extends Activity implements INetworkCallback {
 		{
 			//÷√0
 			formerCallbackCount=len;
-
-			//Log.w(DT, "finalCallbackData:"+formerCallbackCount);
-
 			String message="";
 			for (int i=0;i<finalCallBackData.size();i++) 
 			{   
@@ -386,16 +367,13 @@ public class ClientActivity extends Activity implements INetworkCallback {
 					message+=temp+" ";
 				else
 					message+=temp;
-				//Log.d(DT, " "+temp+" ");
 			}
-			//Log.w(DT,"+++++"+message+"+++++");
 			if(message.length()!=0)
 			{
-				//mService.sendCommand(message);
+				mService.sendCallback(message);
 			}
 			else
 				return true;
-			//Log.d(DT,"fcbd"+ finalCallBackData.toString());
 			return false;
 		}
 

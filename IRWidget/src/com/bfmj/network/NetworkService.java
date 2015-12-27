@@ -9,6 +9,8 @@ import org.alljoyn.bus.annotation.BusSignalHandler;
 
 
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 
 import com.fishjord.irwidget.ir.codes.ControlCommand;
 import com.fishjord.irwidget.ir.codes.IRCommand;
@@ -86,6 +88,8 @@ public class NetworkService implements INetworkService {
 	public void sendControlCommand(ControlCommand command){
 		Message msg = mBusHandler.obtainMessage(BusHandlerCallback.CHAT,
                 new PingInfo(selfID,targetID+":"+command.toString()));
+		//Toast.makeText(this, text, duration)
+		//Toast.makeText(mContainer, "command:====="+command.toString(),Toast.LENGTH_LONG).show();
 		mBusHandler.sendMessage(msg);
 	}
 	
@@ -321,6 +325,14 @@ public class NetworkService implements INetworkService {
 
 	@Override
 	public void sendLearnedCommand(LearnedCommand command) {
+		// TODO Auto-generated method stub
+		Message msg = mBusHandler.obtainMessage(BusHandlerCallback.CHAT,
+                new PingInfo(selfID,targetID+":"+command.toString()));
+		mBusHandler.sendMessage(msg);
+	}
+
+	@Override
+	public void sendCallback(String command) {
 		// TODO Auto-generated method stub
 		Message msg = mBusHandler.obtainMessage(BusHandlerCallback.CHAT,
                 new PingInfo(selfID,targetID+":"+command.toString()));

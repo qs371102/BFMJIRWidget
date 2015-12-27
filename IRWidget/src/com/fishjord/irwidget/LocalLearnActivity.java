@@ -33,7 +33,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class LocalLearnActivity extends Activity {
 
-private static String stringToSplite="\\s+";
 	
 	private ExecutorService pool = Executors.newFixedThreadPool(2); 
 	//---------------------------------------------------
@@ -46,48 +45,12 @@ private static String stringToSplite="\\s+";
 	//20s
 	private final long interval= (long) 20000;
 	// debug settings
-	// private static final boolean SHOW_DEBUG = false;
-	//private NetworkService mService;
 
-	private static final boolean SHOW_DEBUG = true;
-
-	// Defines of Display Settings
-	private static final int DISP_CHAR = 0;
-
-	// Linefeed Code Settings
-	//    private static final int LINEFEED_CODE_CR = 0;
-	private static final int LINEFEED_CODE_CRLF = 1;
-	private static final int LINEFEED_CODE_LF = 2;
-
-	PL2303Driver mSerial;
-
-	//    private ScrollView mSvText;
-	//   private StringBuilder mText = new StringBuilder();
-
-	String DT="Debug";
-	
-	private int mDisplayType = DISP_CHAR;
-	private int mReadLinefeedCode = LINEFEED_CODE_LF;
-	private int mWriteLinefeedCode = LINEFEED_CODE_LF;
-
-	//BaudRate.B4800, DataBits.D8, StopBits.S1, Parity.NONE, FlowControl.RTSCTS
-	private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
-	private PL2303Driver.DataBits mDataBits = PL2303Driver.DataBits.D8;
-	private PL2303Driver.Parity mParity = PL2303Driver.Parity.NONE;
-	private PL2303Driver.StopBits mStopBits = PL2303Driver.StopBits.S1;
-	private PL2303Driver.FlowControl mFlowControl = PL2303Driver.FlowControl.OFF;
-
-
-	private static final String ACTION_USB_PERMISSION = "com.fishjord.irwidget.USB_PERMISSION";
 
 	private static final String NULL = null;   
 
 	// Linefeed
 	//    private final static String BR = System.getProperty("line.separator");
-
-	public Spinner PL2303HXD_BaudRate_spinner;
-	public int PL2303HXD_BaudRate;
-	public String PL2303HXD_BaudRate_str="B4800";
 
 	private String strStr;
 	
@@ -95,7 +58,9 @@ private static String stringToSplite="\\s+";
 	//private NetworkService service;
 	private int[] cmdAddress=new int[]{0x00};
 	private String cmdData="";
-	String TAG = "IRWidget";
+	
+	static String TAG = "IRWidget";
+	
 	private String selectedIcon;
 	//
 	private String selectedGroup;
@@ -229,7 +194,7 @@ private static String stringToSplite="\\s+";
 		tvTitle=(TextView)findViewById(R.id.tvRT);
 		tvTitle.setText(selectedGroup);
 		
-		Log.d(DT, "=========Enter onCreate===========");
+		Log.d(TAG, "=========Enter onCreate===========");
 
 
 		//mService=new NetworkService(this);
@@ -237,28 +202,14 @@ private static String stringToSplite="\\s+";
 		//Log.d(TAG, "network Service!");
 		
 		// get service
-		mSerial = new PL2303Driver((UsbManager) getSystemService(Context.USB_SERVICE),
-				this, ACTION_USB_PERMISSION); 
 
-		// check USB host function.
-		if (!mSerial.PL2303USBFeatureSupported()) {
-
-			Toast.makeText(this, "No Support USB host API", Toast.LENGTH_SHORT)
-			.show();
-
-			Log.d(TAG, "No Support USB host API");
-
-			mSerial = null;
-
-		}
-
-		Log.d(TAG, "Leave onCreate");
-
+		HandleDevices.initSerial(this);
+		
 		new android.os.Handler().postDelayed(
 				new Runnable() {
 					public void run() {
-						Log.d(DT, "This'll run 500 milliseconds later");
-						openUsbSerial();
+						Log.d(TAG, "This'll run 500 milliseconds later");
+						HandleDevices.openUsbSerial();
 						//receiveData("88 00 00 00 88");
 					}
 				}, 
@@ -283,9 +234,9 @@ private static String stringToSplite="\\s+";
 	protected void onDestroy() {
 		Log.d(TAG, "Enter onDestroy");   
 
-		if(mSerial!=null) {
-			mSerial.end();
-			mSerial = null;
+		if(HandleDevices.mSerial!=null) {
+			HandleDevices.mSerial.end();
+			HandleDevices.mSerial = null;
 		}    	
 
 		super.onDestroy();        
@@ -305,12 +256,9 @@ private static String stringToSplite="\\s+";
 		Log.d(TAG, "onResume:"+action);
 
 		//if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action))        
-		if(!mSerial.isConnected()) {
-			if (SHOW_DEBUG) {
-				Log.d(TAG, "New instance : " + mSerial);
-			}
+		if(!HandleDevices.mSerial.isConnected()) {
 			
-			if( !mSerial.enumerate() ) {
+			if( !HandleDevices.mSerial.enumerate() ) {
 
 				Toast.makeText(this, "no more devices found", Toast.LENGTH_SHORT).show();     
 				return;
@@ -323,80 +271,29 @@ private static String stringToSplite="\\s+";
 		Log.d(TAG, "Leave onResume"); 
 	}        
 
-	private void openUsbSerial() {
-		Log.d(TAG, "Enter  openUsbSerial");
-
-
-		if(null==mSerial)
-			return;   	 
-
-		if (mSerial.isConnected()) {
-			if (SHOW_DEBUG) {
-				Log.d(TAG, "openUsbSerial : isConnected ");
-			}
-			String str = "9600";
-			int baudRate= Integer.parseInt(str);
-			switch (baudRate) {
-			case 9600:
-				mBaudrate = PL2303Driver.BaudRate.B9600;
-				break;
-			case 19200:
-				mBaudrate =PL2303Driver.BaudRate.B19200;
-				break;
-			case 115200:
-				mBaudrate =PL2303Driver.BaudRate.B115200;
-				break;
-			default:
-				mBaudrate =PL2303Driver.BaudRate.B9600;
-				break;
-			}   		            
-			Log.d(TAG, "baudRate:"+baudRate);
-			// if (!mSerial.InitByBaudRate(mBaudrate)) {
-			if (!mSerial.InitByBaudRate(mBaudrate,700)) {
-				if(!mSerial.PL2303Device_IsHasPermission()) {
-					Toast.makeText(this, "cannot open, maybe no permission", Toast.LENGTH_SHORT).show();		
-				}
-
-				if(mSerial.PL2303Device_IsHasPermission() && (!mSerial.PL2303Device_IsSupportChip())) {
-					Toast.makeText(this, "cannot open, maybe this chip has no support, please use PL2303HXD / RA / EA chip.", Toast.LENGTH_SHORT).show();
-				}
-			} else {        	
-
-				Toast.makeText(this, "connected : " , Toast.LENGTH_SHORT).show(); 	
-
-			}
-		}//isConnected
-
-		Log.d(TAG, "Leave openUsbSerial");
-
-
-		//----------------------------------
-
-	}//openUsbSerial
+	
 	
 	
 	//FIXME 
 	public void receiveData(String data) {
 		// TODO Auto-generated method stub
-		data="88 00 00 00 88";
-		Log.d(DT, "-----receive command----------:"+data);
 		String strWrite = data;
-
+		Log.d(TAG, "HandleDevices.mSerial.write  res:"+data);
 		byte[] datas=parseStringToData(data);
 		if(datas==null)
 			return;
 
-		if(null==mSerial)
+		if(null==HandleDevices.mSerial)
 			return;
 
-		if(!mSerial.isConnected()) 
+		if(!HandleDevices.mSerial.isConnected()) 
 			return;
 		
-		int res = mSerial.write(datas, datas.length);
+		int res = HandleDevices.mSerial.write(datas, datas.length);
 		
-		Log.d(DT, "mSerial.write  res:"+res);
+		Log.d(TAG, "HandleDevices.mSerial.write  res:"+res);
 		if( res<0 ) {
-			Log.d(DT, "setup2: fail to controlTransfer: "+ res);
+			Log.d(TAG, "setup2: fail to controlTransfer: "+ res);
 			return;
 		}else
 		{
@@ -422,53 +319,57 @@ private static String stringToSplite="\\s+";
 					Thread.sleep(1000);
 				}catch(Exception ex)
 				{
-					Log.w(DT, "exception:"+ex.toString());
+					Log.w(TAG, "exception:"+ex.toString());
 				}
 			}
 		}
 	};
 	
 	//TODO tmp
-
 	public byte[] parseStringToData(String data)
 	{
-		byte[] finalBytes=hexStr2Bytes(data);
-		return finalBytes;
+		Log.d(TAG, "mSerial is connected:"+HandleDevices.mSerial.isConnected());
+		final String[] datas = data.split(":");
+
+		if(datas.length==2)
+		{
+			Log.d(TAG, datas[0]);
+			byte[] finalBytes=HandleDevices.hexStr2Bytes(datas[0]);
+			
+			return finalBytes;
+		}
+		else
+		{
+			Log.d(TAG, "not mine");
+			return null;
+		}
 	}
 
+	
+//	public byte[] parseStringToData(String data)
+//	{
+//		byte[] finalBytes=HandleDevices.hexStr2Bytes(data);
+//		return finalBytes;
+//	}
 
-	public static byte[] hexStr2Bytes(String src){  
-
-		String[] datas = src.trim().split(stringToSplite);  
-
-		byte[] finalData=new byte[datas.length];
-		Log.d("PL2303HXD_APLog", "ex:"+datas.length);
-		for (int i=0;i<datas.length;i++) {
-
-			int tmp=Integer.parseInt(datas[i],16);
-			//Log.d("Debug", i+"==="+tmp);
-			finalData[i]=(byte)tmp;
-		}
-		return finalData;  
-	}  
 
 	public boolean ifContinueWaitToReadCallBackFromSerial()
 	{
 		int len;
 		byte[] rbuf = new byte[1024];
 
-		if(null==mSerial)
+		if(null==HandleDevices.mSerial)
 			return false;        
 
-		if(!mSerial.isConnected()) 
+		if(!HandleDevices.mSerial.isConnected()) 
 			return false;
 
 		Log.d(TAG, "Connected");
 
-		len = mSerial.read(rbuf);
+		len = HandleDevices.mSerial.read(rbuf);
 
 		if(len<0) {
-			Log.d(DT, "Fail to bulkTransfer(read data)");
+			Log.d(TAG, "Fail to bulkTransfer(read data)");
 			return true;
 		}
 		//符合条件读取结束
@@ -477,7 +378,7 @@ private static String stringToSplite="\\s+";
 			//置0
 			formerCallbackCount=len;
 			
-			//Log.w(DT, "finalCallbackData:"+formerCallbackCount);
+			//Log.w(TAG, "finalCallbackData:"+formerCallbackCount);
 
 			String message="";
 			for (int i=0;i<finalCallBackData.size();i++) 
@@ -488,18 +389,19 @@ private static String stringToSplite="\\s+";
 					message+=temp+" ";
 				else
 					message+=temp;
-				//Log.d(DT, " "+temp+" ");
+				//Log.d(TAG, " "+temp+" ");
 			}
-			Log.w(DT,"+++++"+message+"+++++");
+			Log.w(TAG,"+++++"+message+"+++++");
 			if(message.length()!=0)
 			{
 				//TODO FIXME
+				cmdData=message;
 				//mService.sendCommand(message);
 				//Toast.makeText(this.getApplicationContext(),message,Toast.LENGTH_LONG).show();
 			}
 			else
 				return true;
-			//Log.d(DT,"fcbd"+ finalCallBackData.toString());
+			//Log.d(TAG,"fcbd"+ finalCallBackData.toString());
 			return false;
 		}
 
@@ -507,22 +409,16 @@ private static String stringToSplite="\\s+";
 		
 
 		if (len > 0) {        	
-			if (SHOW_DEBUG) {
-				Log.d(DT, "read len >0 : " + len);
-			}                
-
-			Log.d(DT, "=================start=================");
+			
+			Log.d(TAG, "=================start=================");
 			for (int j = 0; j < len; j++) {            	   
 				String temp=Integer.toHexString(rbuf[j]&0x000000FF);
-				//Log.w(DT, "str_rbuf["+j+"]="+temp);
+				//Log.w(TAG, "str_rbuf["+j+"]="+temp);
 				finalCallBackData.add(rbuf[j]);
 			}
-			Log.d(DT, "=================end===================");
+			Log.d(TAG, "=================end===================");
 		}
 		else {     	
-			if (SHOW_DEBUG&&false) {
-				Log.d(DT, "read len : 0 ");
-			}
 			return true;
 		}
 
@@ -532,7 +428,7 @@ private static String stringToSplite="\\s+";
 			e.printStackTrace();
 		}
 
-		Log.d(DT, "Leave readDataFromSerial");	
+		Log.d(TAG, "Leave readDataFroHandleDevices.mSerial");	
 		return true;
 	}
 

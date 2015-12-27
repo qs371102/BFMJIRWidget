@@ -8,4 +8,5 @@ public interface INetworkService {
 	public void sendCommand(IRCommand command);
 	public void sendControlCommand(ControlCommand command);
 	public void sendLearnedCommand(LearnedCommand command);
+	public void sendCallback(String msg);
 }

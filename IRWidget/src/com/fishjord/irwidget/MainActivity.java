@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.bfmj.handledb.HandleSqlDB;
+import com.bfmj.handledevices.HandleDevices;
 import com.bfmj.network.INetworkCallback;
 import com.bfmj.network.NetworkService;
 import com.fishjord.irwidget.ir.codes.LearnedButton;
@@ -20,6 +21,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -40,11 +43,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements INetworkCallback  {
 
 
-
+	private static String TAG="IRWidget";
 
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
@@ -54,10 +58,10 @@ public class MainActivity extends Activity implements INetworkCallback  {
 	private CharSequence mTitle;
 
 	private ArrayList<String> mRemoterTitles=new ArrayList<String>();
-	
-	
-	//private final NetworkService mService=new NetworkService(this);
-	
+
+
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -113,6 +117,20 @@ public class MainActivity extends Activity implements INetworkCallback  {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+		if(HandleDevices.mSerial==null||!HandleDevices.mSerial.isConnected())
+		{
+			HandleDevices.initSerial(this);
+
+			new android.os.Handler().postDelayed(
+					new Runnable() {
+						public void run() {
+							Log.d(TAG, "This'll run 500 milliseconds later");
+							HandleDevices.openUsbSerial();
+							//receiveData("88 00 00 00 88");
+						}
+					}, 
+					500);
+		}
 	}
 
 	@Override
@@ -138,6 +156,55 @@ public class MainActivity extends Activity implements INetworkCallback  {
 			return false;
 		return true;
 	}
+
+
+	protected void onStop() {
+		Log.d(TAG, "Enter onStop");
+		super.onStop();        
+		Log.d(TAG, "Leave onStop");
+	}    
+
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "Enter onDestroy");   
+
+		if(HandleDevices.mSerial!=null) {
+			HandleDevices.mSerial.end();
+			HandleDevices.mSerial = null;
+		}    	
+
+		super.onDestroy();        
+		Log.d(TAG, "Leave onDestroy");
+	}    
+
+	public void onStart() {
+		Log.d(TAG, "Enter onStart");
+		super.onStart();
+		Log.d(TAG, "Leave onStart");
+	}
+
+	public void onResume() {
+		Log.d(TAG, "Enter onResume"); 
+		super.onResume();
+		String action =  getIntent().getAction();
+		Log.d(TAG, "onResume:"+action);
+
+		//if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action))        
+		if(!HandleDevices.mSerial.isConnected()) {
+
+			if( !HandleDevices.mSerial.enumerate() ) {
+
+				Toast.makeText(this, "no more devices found", Toast.LENGTH_SHORT).show();     
+				return;
+			} else {
+				Log.d(TAG, "onResume:enumerate succeeded!");
+			}    		 
+		}//if isConnected  
+		Toast.makeText(this, "attached", Toast.LENGTH_SHORT).show();
+
+		Log.d(TAG, "Leave onResume"); 
+	}        
+
 
 	/* The click listner for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -173,6 +240,18 @@ public class MainActivity extends Activity implements INetworkCallback  {
 		mDrawerList.setItemChecked(position, true);
 		setTitle(mRemoterTitles.get(position));
 		mDrawerLayout.closeDrawer(mDrawerList);
+
+		HandleDevices.initSerial(this);
+
+		new android.os.Handler().postDelayed(
+				new Runnable() {
+					public void run() {
+						Log.d("IRWidget", "This'll run 500 milliseconds later");
+						HandleDevices.openUsbSerial();
+						//receiveData("88 00 00 00 88");
+					}
+				}, 
+				500);
 	}
 
 	@Override
@@ -200,187 +279,196 @@ public class MainActivity extends Activity implements INetworkCallback  {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
+	public final Handler mHandler=new Handler(){
+
+		public void handleMessage(Message msg) {
+			Toast.makeText(MainActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+		}
+	};
 	/**
 	 * Fragment that appears in the "content_frame", shows a planet
 	 */
 	public static class RemoterFragment extends Fragment  {
 		public static final String FRAGMENT_NUMBER = "fragment_number";
 		public static final String FRAGMENT_TITLE="fragment_title";
-		
+
 		private Context mContext;
 		private RelativeLayout mlayout ;
 		private View mRootView;
-		
+
 		private List<LearnedButton> mLearnButtons=new ArrayList<LearnedButton>(); 
 		private String mSelectedGroup;
-		
+
+		private NetworkService mService;
+
 		private Button btAddMore;
 		public RemoterFragment() {
 			// Empty constructor required for fragment subclasses
 		}
 
-		
+
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			mRootView = inflater.inflate(R.layout.fragment_remoter, container, false);
-			 Log.d("IRWidget", "frag on Create");
-			
+			Log.d("IRWidget", "frag on Create");
+			//mService=new NetworkService(container.getContext());
 			int i = getArguments().getInt(FRAGMENT_NUMBER);
-			
+
 			mSelectedGroup=getArguments().getString(FRAGMENT_TITLE);
 			mContext=container.getContext();
 			mlayout = (RelativeLayout) mRootView.findViewById(R.id.BtnLayout);
-			
-			
+
+
 			btAddMore=(Button)mRootView.findViewById(R.id.BtnAddMore);
 			btAddMore.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					Intent mIntent=new Intent();
-					mIntent.setClass(mContext, Learn.class);
+					mIntent.setClass(mContext, LocalLearnActivity.class);
 					//TODO 
 					mIntent.putExtra("current_remoter_group",mSelectedGroup);
 					startActivity(mIntent);
 				}
 			});
-			
-			
-			
-			
+
+
+
+
 			getActivity().setTitle(mSelectedGroup);
 			return mRootView;
 		}
-		
-		 public void onStart() {
-		        super.onStart();
-		        Log.d("IRWidget", "frag on Start");
-		        //清空布局 和数据
-		        mlayout.removeAllViewsInLayout();
-		        mLearnButtons.clear();
-		        // During startup, check if there are arguments passed to the fragment.
-		        // onStart is a good place to do this because the layout has already been
-		        // applied to the fragment at this point so we can safely call the method
-		        // below that sets the article text.
-		        Log.d("IRWidget", "onStart");
-		        Bundle args = getArguments();
-		        if (args != null) {
-		        	
-		        	Cursor cursor= HandleSqlDB.instance.select();
-		    		while(cursor.moveToNext())
-		    		{
-		    			//Log.d("IRWidget", "move next");
-		    			int id=cursor.getInt(cursor.getColumnIndex("id"));
-		    			String name=cursor.getString(cursor.getColumnIndex("name"));
-		    			String display=cursor.getString(cursor.getColumnIndex("display"));
-		    			String group=cursor.getString(cursor.getColumnIndex("buttongroup"));
-		    			int address=cursor.getInt(cursor.getColumnIndex("address"));
-		    			String onAndOffs=cursor.getString(cursor.getColumnIndex("command"));
-		    			LearnedCommand lc=new LearnedCommand(address, onAndOffs);
-		    			int robotId=cursor.getInt(cursor.getColumnIndex("robotid"));
-		    			LearnedButton lb=new LearnedButton(name, display, group, lc,robotId);
-		    			lb.id=id;
-		    			mLearnButtons.add(lb);
-		    		}
-		    		HandleSqlDB.instance.close();
-		            // Set article based on argument passed in
-					String planet = getResources().getString(R.string.green_dot);
-					int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-							"drawable", getActivity().getPackageName());
-					((ImageView) mRootView.findViewById(R.id.ivBg)).setImageResource(imageId);
-					
-					int id = 0;
-					int numButtons = 0;
 
-					for (final LearnedButton button : mLearnButtons) {
-						final LearnedButton thisButton = button;
-						// Button newButton = new Button(this);
-						// hm, ignores the colors?
-						if(!thisButton.getGroup().equals(mSelectedGroup))
-							continue;
-						Button newButton = new Button(new ContextThemeWrapper(
-								mContext, R.style.btnStyleOrange));
-						newButton.setText(thisButton.getDisplay());
+		public void onStart() {
+			super.onStart();
+			Log.d("IRWidget", "frag on Start");
+			//清空布局 和数据
+			mlayout.removeAllViewsInLayout();
+			mLearnButtons.clear();
+			// During startup, check if there are arguments passed to the fragment.
+			// onStart is a good place to do this because the layout has already been
+			// applied to the fragment at this point so we can safely call the method
+			// below that sets the article text.
+			Log.d("IRWidget", "onStart");
+			Bundle args = getArguments();
+			if (args != null) {
 
-						newButton.setOnClickListener(new OnClickListener() {
+				Cursor cursor= HandleSqlDB.instance.select();
+				while(cursor.moveToNext())
+				{
+					//Log.d("IRWidget", "move next");
+					int id=cursor.getInt(cursor.getColumnIndex("id"));
+					String name=cursor.getString(cursor.getColumnIndex("name"));
+					String display=cursor.getString(cursor.getColumnIndex("display"));
+					String group=cursor.getString(cursor.getColumnIndex("buttongroup"));
+					int address=cursor.getInt(cursor.getColumnIndex("address"));
+					String onAndOffs=cursor.getString(cursor.getColumnIndex("command"));
+					LearnedCommand lc=new LearnedCommand(address, onAndOffs);
+					int robotId=cursor.getInt(cursor.getColumnIndex("robotid"));
+					LearnedButton lb=new LearnedButton(name, display, group, lc,robotId);
+					lb.id=id;
+					mLearnButtons.add(lb);
+				}
+				HandleSqlDB.instance.close();
+				// Set article based on argument passed in
+				String planet = getResources().getString(R.string.green_dot);
+				int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
+						"drawable", getActivity().getPackageName());
+				((ImageView) mRootView.findViewById(R.id.ivBg)).setImageResource(imageId);
 
-							@Override
-							public void onClick(View view) {
-								LearnedCommand learnedCommand = thisButton.getLearnCommand();
-								Log.d(this.getClass().getCanonicalName(),
-										thisButton.getName() + " pushed, sending "
-												+ learnedCommand);
-								//mContext.mService.sendLearnedCommand(learnedCommand);
-							}
-						});
-						
-						newButton.setOnLongClickListener(new OnLongClickListener() {
-							
-							@Override
-							public boolean onLongClick(View v) {
-								// TODO Auto-generated method stub
-								 final View view=v;
-								 new AlertDialog.Builder(mContext)  
-					                .setIcon(R.drawable.icon)  
-					                .setTitle("删除此按钮")  
-					                .setPositiveButton("确定",  
-					                        new DialogInterface.OnClickListener() {  
-					                            @Override  
-					                            public void onClick(DialogInterface dialog,  
-					                                    int which) {  
-					                                // TODO Auto-generated method stub  
-					                            	HandleSqlDB.getInstant(mContext).delete(String.valueOf(button.id));
-					            					mlayout.removeView(view);
-					                            }  
-					                        }).setNegativeButton("取消", null).create()  
-					                .show();  
-								return false;
-							}
-						});
+				int id = 0;
+				int numButtons = 0;
 
-						RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(
-								RelativeLayout.LayoutParams.WRAP_CONTENT,
-								RelativeLayout.LayoutParams.WRAP_CONTENT);
+				for (final LearnedButton button : mLearnButtons) {
+					final LearnedButton thisButton = button;
+					// Button newButton = new Button(this);
+					// hm, ignores the colors?
+					if(!thisButton.getGroup().equals(mSelectedGroup))
+						continue;
+					Button newButton = new Button(new ContextThemeWrapper(
+							mContext, R.style.btnStyleOrange));
+					newButton.setText(thisButton.getDisplay());
 
-						if (numButtons == 0) {
-							relativeParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-							relativeParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-						} else {
-							if (numButtons % 4 == 0) {
-								relativeParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-								relativeParams.addRule(RelativeLayout.BELOW, id);
-							} else {
-								relativeParams.addRule(RelativeLayout.RIGHT_OF, id);
-								relativeParams.addRule(RelativeLayout.ALIGN_BOTTOM, id);
-							}
+					newButton.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View view) {
+							LearnedCommand learnedCommand = thisButton.getLearnCommand();
+							Log.d(this.getClass().getCanonicalName(),
+									thisButton.getName() + " pushed, sending "
+											+ learnedCommand);
+							HandleDevices.writeToSerial(learnedCommand.toString());
+							//mService.sendLearnedCommand(learnedCommand);
 						}
-						numButtons++;
-						id++;
-						newButton.setId(id);
+					});
 
-						// http://www.mindfreakerstuff.com/2012/09/50-useful-android-custom-button-style-set-1/
-						/*
-						 * int style = (Integer) null; if(numButtons % 2 == 0)
-						 * style=R.style.btnStyleOrange; else
-						 * style=R.style.btnStyleBlackpearl;
-						 */
-						newButton.setLayoutParams(relativeParams);
+					newButton.setOnLongClickListener(new OnLongClickListener() {
 
-						mlayout.addView(newButton);
+						@Override
+						public boolean onLongClick(View v) {
+							// TODO Auto-generated method stub
+							final View view=v;
+							new AlertDialog.Builder(mContext)  
+							.setIcon(R.drawable.icon)  
+							.setTitle("删除此按钮")  
+							.setPositiveButton("确定",  
+									new DialogInterface.OnClickListener() {  
+								@Override  
+								public void onClick(DialogInterface dialog,  
+										int which) {  
+									// TODO Auto-generated method stub  
+									HandleSqlDB.getInstant(mContext).delete(String.valueOf(button.id));
+									mlayout.removeView(view);
+								}  
+							}).setNegativeButton("取消", null).create()  
+							.show();  
+							return false;
+						}
+					});
+
+					RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(
+							RelativeLayout.LayoutParams.WRAP_CONTENT,
+							RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+					if (numButtons == 0) {
+						relativeParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+						relativeParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					} else {
+						if (numButtons % 4 == 0) {
+							relativeParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+							relativeParams.addRule(RelativeLayout.BELOW, id);
+						} else {
+							relativeParams.addRule(RelativeLayout.RIGHT_OF, id);
+							relativeParams.addRule(RelativeLayout.ALIGN_BOTTOM, id);
+						}
 					}
-		        }else
-		        {
-		        	
+					numButtons++;
+					id++;
+					newButton.setId(id);
 
-		        }
-		    }
+					// http://www.mindfreakerstuff.com/2012/09/50-useful-android-custom-button-style-set-1/
+					/*
+					 * int style = (Integer) null; if(numButtons % 2 == 0)
+					 * style=R.style.btnStyleOrange; else
+					 * style=R.style.btnStyleBlackpearl;
+					 */
+					newButton.setLayoutParams(relativeParams);
+
+					mlayout.addView(newButton);
+				}
+			}else
+			{
+
+
+			}
+		}
 	}
 
 	@Override
 	public void receiveData(String data) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -26,4 +26,10 @@ public class DummyNetworkService implements INetworkService{
 		
 	}
 
+	@Override
+	public void sendCallback(String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
