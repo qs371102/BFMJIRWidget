@@ -19,7 +19,7 @@ public class ByteAndStringTools {
 	{
 		Log.d(TAG, data);
 		final String[] datas = data.split(":");
-		if(datas.length==3)
+		if(datas.length==4)
 		{
 			if(!NetworkService.isMine(datas[1]))
 			{
@@ -31,6 +31,7 @@ public class ByteAndStringTools {
 		else
 			return null;
 	}
+	
 
 
 	public static byte[] hexStr2Bytes(String src){  

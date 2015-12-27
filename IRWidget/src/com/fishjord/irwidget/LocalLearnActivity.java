@@ -11,12 +11,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
-
+import com.bfmj.byteandstringtools.ByteAndStringTools;
 import com.bfmj.handledb.HandleSqlDB;
 import com.bfmj.handledevices.HandleDevices;
+import com.bfmj.network.NetworkService;
 import com.fishjord.irwidget.ir.codes.ControlCommand;
 import com.fishjord.irwidget.ir.codes.LearnedButton;
 import com.fishjord.irwidget.ir.codes.LearnedCommand;
@@ -76,6 +79,33 @@ public class LocalLearnActivity extends Activity {
 	
 	private TextView tvTitle;
 
+	private Handler mHandler=new Handler()
+			{
+				public void handleMessage(Message msg)
+				{
+					String data=msg.obj.toString();
+					Log.d(TAG, "++++++++++++++++++++++++receive command");
+					String datas=data;
+					Log.d(TAG,"-------------"+ data);
+					if(datas==null)
+						return;
+
+					if(datas.equals("e0"))
+					{
+						Toast.makeText(LocalLearnActivity.this, "超时！未能成功学习", Toast.LENGTH_LONG).show();
+						btLearn.setEnabled(true);
+						btSave.setEnabled(false);
+					}
+					else
+					{
+						Toast.makeText(LocalLearnActivity.this, datas, Toast.LENGTH_LONG).show();
+						cmdData=datas;
+						btSave.setEnabled(true);
+					}
+				}
+			};
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -344,7 +374,6 @@ public class LocalLearnActivity extends Activity {
 			return null;
 		}
 	}
-
 	
 //	public byte[] parseStringToData(String data)
 //	{
@@ -395,7 +424,11 @@ public class LocalLearnActivity extends Activity {
 			if(message.length()!=0)
 			{
 				//TODO FIXME
-				cmdData=message;
+				Message msg=new Message();
+				msg.obj=message;
+				mHandler.sendMessage(msg);
+				//cmdData=message;
+				//btSave.setEnabled(true);
 				//mService.sendCommand(message);
 				//Toast.makeText(this.getApplicationContext(),message,Toast.LENGTH_LONG).show();
 			}
