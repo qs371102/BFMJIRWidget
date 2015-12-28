@@ -307,6 +307,7 @@ public class ClientActivity extends Activity implements INetworkCallback {
 			{
 				return null;
 			}
+			Toast.makeText(this, "data[2]:"+datas[2], Toast.LENGTH_SHORT).show();
 			byte[] finalBytes=hexStr2Bytes(datas[2]);
 			needCallback= Boolean.valueOf(datas[3]);
 			return finalBytes;
